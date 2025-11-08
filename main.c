@@ -1,24 +1,22 @@
 #include <stdio.h>
 #include <windows.h>
 
-void print_red_text(char str[]);
-void print_blue_text(char str[]);
-void print_green_text(char str[]);
-void printLMSheading();
+void redPrint(char str[]);
+void bluePrint(char str[]);
+void greenPrint(char str[]);
+void LMSHeading();
 
 int main() {
 
-    printLMSheading();
-    print_blue_text("Usaim\n");
-    print_red_text("Usaim\n");
-    print_green_text("Usaim\n");
+    LMSHeading();
+    bluePrint("Usaim\n");
+    redPrint("Usaim\n");
+    greenPrint("Usaim\n");
 
-
-    scanf("%d");
     return 0;
 }
 
-void print_red_text(char str[]){
+void redPrint(char str[]){
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
     SetConsoleTextAttribute(hConsole, 12); // Red text
@@ -26,7 +24,7 @@ void print_red_text(char str[]){
     
     SetConsoleTextAttribute(hConsole, 7);
 }
-void print_blue_text(char str[]){
+void bluePrint(char str[]){
         HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
 
@@ -39,7 +37,7 @@ void print_blue_text(char str[]){
     
     SetConsoleTextAttribute(hConsole, 7);
 }
-void print_green_text(char str[]){
+void greenPrint(char str[]){
 
         HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -48,7 +46,7 @@ void print_green_text(char str[]){
     
     SetConsoleTextAttribute(hConsole, 7);
 }
-void printLMSheading(){
+void LMSHeading(){
     printf(" _     _ _                            __  __                                      \n");
     printf("| |   (_) |__  _ __ __ _ _ __ _   _  |  \\/  | __ _ _ __   __ _  __ _  ___         \n");
     printf("| |   | | '_ \\| '__/ _` | '__| | | | | |\\/| |/ _` | '_ \\ / _` |/ _` |/ _ \\  _____ \n");
