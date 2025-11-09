@@ -5,11 +5,19 @@
 typedef struct {
     char name[30];
     char email[50];
-    char password[30];
     char contact[10];
     int tier;
+    float fine;
+    int curr_borrowed;
+
     
 } User;
+
+//global variables to store data of currently logged in user and if user is logged in rn or not
+User user;
+int isLoggedIn = 0;
+
+int UCount=0, BCount=0, BorrCount=0;
 
 
 void redPrint(char str[]);
@@ -22,6 +30,7 @@ void LMSHeading();
 void LoginInfo();
 
 int SignUp();
+int CreateStr(int id,char email[50],char password[30], char name[30], char contact[10], float fine, int curr_borr, int tier, char string[200]);
 int Login();
 int EmailExists();
 
@@ -30,6 +39,8 @@ int main(){
     char choice;
 
     // ascii art of LMS
+
+    loadCounts();
     LMSHeading();
     yellowPrint("USAIM\n");
     brightwhitePrint("USAIM\n");
@@ -134,6 +145,31 @@ void LoginInfo(){
     printf("Enter Your Choice: ");
 }
 
+void loadCounts() {
+    FILE *fp = fopen("meta.txt", "r");
+    if (fp == NULL) {
+        // If file doesn’t exist, initialize with 0
+        UCount = 0;
+        BCount = 0;
+        BorrCount = 0;
+        return;
+    }
+
+    fscanf(fp, "%d %d %d", &UCount, &BCount, &BorrCount);
+    fclose(fp);
+}
+void saveCounts() {
+    FILE *fp = fopen("meta.txt", "w");
+    if (fp == NULL) {
+        printf("Error saving counters!\n");
+        return;
+    }
+
+    fprintf(fp, "%d %d %d", UCount, BCount, BorrCount);
+    fclose(fp);
+}
+
+
 int SignUp(){
     char email[50], password[30], name[30], contact[10];
     int tier;
@@ -145,6 +181,9 @@ int SignUp(){
             redPrint("This email already exists in system. Use another email\n");
             continue;
         }
+        break;
+    }
+
         printf("Enter Password: ");
         fgets(password, sizeof(password), stdin);
         printf("Enter Name: ");
@@ -154,20 +193,66 @@ int SignUp(){
         printf("TIERS\n");
         brightwhitePrint("1 - Silver\n");
         yellowPrint("2 - Gold\n");
-        purplePrint("3 - Amethyst\n");
+        purplePrint("3 - Platinium\n");
 
         printf("Enter Tier: ");
         scanf("%d", &tier);
         getchar();
         
         // Function to write data to file in csv format
-        // Email,Password,Name,Contact,Tier (if error in this, return 0)
+        // id,Email,Password,Name,Contact,fine,currently_borrowed,Tier (if error in this, return 0)
+        char line[200];
+        int x = CreateStr(UCount,email,password,name,contact,0.0,0,tier,line);
+        if (x){
+            x = AppendToFile("Users.txt", line);
+            if (!x){
+                redPrint("Error in writing to file\n");
+                return 0;
+            }
+        } else{
+            redPrint("An Error Occured while creating string in csv form\n");
+            return 0;
+        }
 
-        break;
+        // when user signs in, put its data in global struct
+        strcpy(user.email, email);
+        strcpy(user.name, name);
+        strcpy(user.contact, contact);
+        user.fine = 0.0;
+        user.curr_borrowed=0;
+        user.tier = tier;
+        UCount++;
+        saveCounts();
 
-    }
+        
+
+        //---------------------------
 
     return 1;
+}
+
+
+int CreateStr(int id, char email[50], char password[30], char name[30], char contact[10],
+              float fine, int curr_borr, int tier, char string[200]) {
+
+    // Create formatted string safely
+    int written = sprintf(string, "%d,%s,%s,%s,%s,%.2f,%d,%d",
+                          id, email, password, name, contact, fine, curr_borr, tier);
+
+    // Check for errors (sprintf returns number of chars written or negative if failed)
+    if (written < 0)
+        return 0;
+    else
+        return 1;
+}
+int AppendToFile(const char *filename, const char *data) {
+    FILE *fp = fopen(filename, "a"); // open in append mode
+    if (fp == NULL)
+        return 0; // failed to open file
+
+    fprintf(fp, "%s\n", data); // write string + newline
+    fclose(fp);
+    return 1; // success
 }
 int Login(){
 
