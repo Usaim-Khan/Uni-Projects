@@ -32,7 +32,7 @@ void LoginInfo();
 int SignUp();
 int CreateStr(int id,char email[50],char password[30], char name[30], char contact[10], float fine, int curr_borr, int tier, char string[200]);
 int Login();
-int EmailExists();
+int EmailExists(char email[50]);
 
 
 int main(){
@@ -177,58 +177,90 @@ int SignUp(){
     while (1){
         printf("Enter Email: ");
         fgets(email, sizeof(email), stdin);
-        if (EmailExists){
+
+        if (EmailExists(email)){
             redPrint("This email already exists in system. Use another email\n");
             continue;
         }
         break;
     }
 
-        printf("Enter Password: ");
-        fgets(password, sizeof(password), stdin);
-        printf("Enter Name: ");
-        fgets(name, sizeof(name), stdin);
-        printf("Enter Contact Num: ");
-        fgets(contact, sizeof(contact), stdin);
-        printf("TIERS\n");
-        brightwhitePrint("1 - Silver\n");
-        yellowPrint("2 - Gold\n");
-        purplePrint("3 - Platinium\n");
+    printf("Enter Password: ");
+    fgets(password, sizeof(password), stdin);
+    printf("Enter Name: ");
+    fgets(name, sizeof(name), stdin);
+    printf("Enter Contact Num: ");
+    fgets(contact, sizeof(contact), stdin);
+    printf("TIERS\n");
+    brightwhitePrint("1 - Silver\n");
+    yellowPrint("2 - Gold\n");
+    purplePrint("3 - Platinium\n");
 
-        printf("Enter Tier: ");
-        scanf("%d", &tier);
-        getchar();
-        
-        // Function to write data to file in csv format
-        // id,Email,Password,Name,Contact,fine,currently_borrowed,Tier (if error in this, return 0)
-        char line[200];
-        int x = CreateStr(UCount,email,password,name,contact,0.0,0,tier,line);
-        if (x){
-            x = AppendToFile("Users.txt", line);
-            if (!x){
-                redPrint("Error in writing to file\n");
-                return 0;
-            }
-        } else{
-            redPrint("An Error Occured while creating string in csv form\n");
+    printf("Enter Tier: ");
+    scanf("%d", &tier);
+    getchar();
+    
+    // Function to write data to file in csv format
+    // id,Email,Password,Name,Contact,fine,currently_borrowed,Tier (if error in this, return 0)
+    char line[200];
+    int x = CreateStr(UCount,email,password,name,contact,0.0,0,tier,line);
+    if (x){
+        x = AppendToFile("Users.txt", line);
+        if (!x){
+            redPrint("Error in writing to file\n");
             return 0;
         }
+    } else{
+        redPrint("An Error Occured while creating string in csv form\n");
+        return 0;
+    }
 
-        // when user signs in, put its data in global struct
-        strcpy(user.email, email);
-        strcpy(user.name, name);
-        strcpy(user.contact, contact);
-        user.fine = 0.0;
-        user.curr_borrowed=0;
-        user.tier = tier;
-        UCount++;
-        saveCounts();
+    // when user signs in, put its data in global struct
+    strcpy(user.email, email);
+    strcpy(user.name, name);
+    strcpy(user.contact, contact);
+    user.fine = 0.0;
+    user.curr_borrowed=0;
+    user.tier = tier;
+    UCount++;
+    saveCounts();
 
-        
+    
 
-        //---------------------------
+    //---------------------------
 
     return 1;
+}
+int EmailExists(char email[50]) {
+    FILE *fp = fopen("Users.txt", "r");
+    if (fp == NULL) {
+        printf("Error: could not open Users.txt\n");
+        return 0; // If file not found, treat as empty (no duplicate)
+    }
+
+    int id, currentlyBorrowed;
+    float fine;
+    char storedEmail[50], password[30], name[50], contact[20], tier[15];
+
+    // Read each line and extract fields separated by commas
+    while (fscanf(fp, "%d,%[^,],%[^,],%[^,],%[^,],%f,%d,%s\n",
+                  &id,
+                  storedEmail,
+                  password,
+                  name,
+                  contact,
+                  &fine,
+                  &currentlyBorrowed,
+                  tier) == 8)
+    {
+        if (strcmp(storedEmail, email) == 0) {
+            fclose(fp);
+            return 1; // Email already exists
+        }
+    }
+
+    fclose(fp);
+    return 0; // Email not found
 }
 
 
