@@ -2,7 +2,10 @@
 #include <windows.h>
 #include <string.h>
 
+#define ADMIN_EMAIL "admin@admin.com"
+
 typedef struct {
+    int id;
     char name[30];
     char email[50];
     char contact[10];
@@ -53,10 +56,10 @@ int main(){
         getchar();
         switch(choice){
             case 1:
-                SignUp();
+                int x = SignUp();
                 break;
             case 2:
-                Login();
+                int x = Login();
                 break;
             default:
                 redPrint("Invalid Choice. Try Again\n");
@@ -219,6 +222,7 @@ int SignUp(){
     strcpy(user.email, email);
     strcpy(user.name, name);
     strcpy(user.contact, contact);
+    user.id = UCount;
     user.fine = 0.0;
     user.curr_borrowed=0;
     user.tier = tier;
@@ -263,7 +267,6 @@ int EmailExists(char email[50]) {
     return 0; // Email not found
 }
 
-
 int CreateStr(int id, char email[50], char password[30], char name[30], char contact[10],
               float fine, int curr_borr, int tier, char string[200]) {
 
@@ -277,6 +280,7 @@ int CreateStr(int id, char email[50], char password[30], char name[30], char con
     else
         return 1;
 }
+
 int AppendToFile(const char *filename, const char *data) {
     FILE *fp = fopen(filename, "a"); // open in append mode
     if (fp == NULL)
@@ -287,5 +291,53 @@ int AppendToFile(const char *filename, const char *data) {
     return 1; // success
 }
 int Login(){
+    char email[50], password[30];
+
+    printf("Enter Email: ");
+    fgets(email, sizeof(email), stdin);
+    printf("Enter Password: ");
+    fgets(password, sizeof(password), stdin);
+
+    FILE *fp = fopen("Users.txt", "r");
+    if (fp == NULL) {
+        redPrint("Error: could not open Users.txt\n");
+        return 0; // File not found
+    }
+
+    int id, currentlyBorrowed;
+    float fine;
+    char storedEmail[50], storedPassword[30], name[50], contact[20], tier[15];
+
+    // Read each line and extract fields separated by commas
+    while (fscanf(fp, "%d,%[^,],%[^,],%[^,],%[^,],%f,%d,%s\n",
+                  &id,
+                  storedEmail,
+                  storedPassword,
+                  name,
+                  contact,
+                  &fine,
+                  &currentlyBorrowed,
+                  tier) == 8)
+    {
+        if (strcmp(storedEmail, email) == 0 && strcmp(storedPassword, password) == 0) {
+            // Successful login
+            strcpy(user.email, storedEmail);
+            strcpy(user.name, name);
+            strcpy(user.contact, contact);
+            user.id = id;
+            user.fine = fine;
+            user.curr_borrowed = currentlyBorrowed;
+            user.tier = atoi(tier);
+            isLoggedIn = 1;
+            fclose(fp);
+            greenPrint("Login Successful!\n");
+            return 1;
+        }
+    }
+
+    fclose(fp);
+    redPrint("Invalid email or password.\n");
+    return 0; // Login failed
+
 
 }
