@@ -22,7 +22,7 @@ int isLoggedIn = 0;
 
 int UCount=0, BCount=0, BorrCount=0;
 
-
+//printng functions
 void redPrint(char str[]);
 void bluePrint(char str[]);
 void greenPrint(char str[]);
@@ -30,19 +30,37 @@ void yellowPrint(char str[]);
 void brightwhitePrint(char str[]);
 void purplePrint(char str[]);
 void LMSHeading();
-void LoginInfo();
+void LoginMenu();
+void MainMenu();
+void AdminMenu();
 
+
+// initialization functions
 void loadCounts();
 void saveCounts();
 
-int AppendToFile(const char *filename, const char *data);
-
+//signup functions
 int SignUp();
 int CreateStr(int id,char email[50],char password[30], char name[30], char contact[15], float fine, int curr_borr, int tier, char string[200]);
 void trimNewline(char *str);
+int AppendToFile(const char *filename, const char *data);
 
+// login functions
 int Login();
 int EmailExists(char email[50]);
+void Logout();
+
+// main functionalities
+void BorrowBook();
+void ReturnBook();
+void DisplayBooks();
+void PayFine();
+
+// admin functionalities
+void AddBook();
+void RemoveUser();
+void ViewAllBorrowedBooks();
+void ListBadMembers();
 
 
 int main(){
@@ -59,24 +77,70 @@ int main(){
 
     // validating choice of account
     do{
-        LoginInfo();
+        LoginMenu();
         scanf("%d", &choice);
         getchar();
         switch(choice){
             case 1:
-                x = SignUp();
-                break;
+                SignUp(); break;
             case 2:
-                x = Login();
-                break;
+                Login(); break;
             default:
                 redPrint("Invalid Choice. Try Again\n");
+        }
+        if (!isLoggedIn){
+            yellowPrint("You need to be logged in to continue\n");
+            continue;
         }
 
     }while(choice<1 || choice >2);
 
-    
+    // we ensured that user is logged in here
 
+
+    MainMenu();
+    if(strcmp(user.email, ADMIN_EMAIL) == 0){
+        AdminMenu();
+    }
+    printf("Enter Your Choice: ");
+    scanf("%d", &choice);
+    getchar();
+
+
+    switch (choice)
+    {
+    case 1:
+        BorrowBook();
+        break;
+    case 2:
+        ReturnBook();
+        break;
+    case 3:
+        PayFine();
+        break;
+    case 4:
+        DisplayBooks();
+        break;
+    case 5:
+        Logout();
+        break;
+    case 6:
+        AddBook();
+        break;
+    case 7:
+        RemoveUser();
+        break;
+    case 8:
+        ViewAllBorrowedBooks();
+        break;
+    case 9:
+        ListBadMembers();
+        break;
+    
+    default:
+    redPrint("Invalid Choice\n");
+        break;
+    }
 
     return 0;
 }
@@ -150,10 +214,25 @@ void LMSHeading(){
     printf("                                  |___/                                           \n");
 
 }
-void LoginInfo(){
+void LoginMenu(){
     printf("1 - Sign Up\n");
     printf("2 - Login\n");
     printf("Enter Your Choice: ");
+}
+void MainMenu(){
+    printf("1 - Borrow A Book\n");
+    printf("2 - Return A Book\n");
+    printf("3 - Pay Fine\n");
+    printf("4 - View Books in Library\n");
+    printf("5 - Logout\n");
+
+}
+void AdminMenu(){
+    printf("6 - Add Book\n");
+    printf("7 - Remove A User\n");
+    printf("8 - View All Borrowed Books \n");
+    printf("9 - List Bad Members\n");
+
 }
 
 void loadCounts() {
@@ -179,7 +258,6 @@ void saveCounts() {
     fprintf(fp, "%d %d %d", UCount, BCount, BorrCount);
     fclose(fp);
 }
-
 
 int SignUp(){
     char email[50], password[30], name[30], contact[15];
@@ -236,9 +314,8 @@ int SignUp(){
     user.tier = tier;
     UCount++;
     saveCounts();
-
-    
-
+    isLoggedIn = 1;
+    greenPrint("Sign Up Successful!\n");
     //---------------------------
 
     return 1;
@@ -274,7 +351,6 @@ int EmailExists(char email[50]) {
     fclose(fp);
     return 0; // Email not found
 }
-
 int CreateStr(int id, char email[50], char password[30], char name[30], char contact[15],
               float fine, int curr_borr, int tier, char string[200]) {
 
@@ -298,7 +374,6 @@ void trimNewline(char *str){
     if (len > 0 && str[len - 1] == '\n')
         str[len - 1] = '\0';
 }
-
 int AppendToFile(const char *filename, const char *data) {
     FILE *fp = fopen(filename, "a"); // open in append mode
     if (fp == NULL)
@@ -362,3 +437,29 @@ int Login(){
 
 
 }
+
+void Logout(){
+    isLoggedIn = 0;
+
+
+    user.id = -1;
+    strcpy(user.email, "");
+    strcpy(user.name, "");
+    strcpy(user.contact, "");
+    user.fine = 0.0;
+    user.curr_borrowed = 0;
+    user.tier = 0;
+    greenPrint("Logged Out Successfully!\n");
+}
+
+
+void BorrowBook(){}
+void ReturnBook(){}
+void DisplayBooks(){}
+void PayFine(){}
+
+
+void AddBook(){}
+void RemoveUser(){}
+void ViewAllBorrowedBooks(){}
+void ListBadMembers(){}
