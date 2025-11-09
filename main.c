@@ -8,7 +8,7 @@ typedef struct {
     int id;
     char name[30];
     char email[50];
-    char contact[10];
+    char contact[15];
     int tier;
     float fine;
     int curr_borrowed;
@@ -32,22 +32,30 @@ void purplePrint(char str[]);
 void LMSHeading();
 void LoginInfo();
 
+void loadCounts();
+void saveCounts();
+
+int AppendToFile(const char *filename, const char *data);
+
 int SignUp();
-int CreateStr(int id,char email[50],char password[30], char name[30], char contact[10], float fine, int curr_borr, int tier, char string[200]);
+int CreateStr(int id,char email[50],char password[30], char name[30], char contact[15], float fine, int curr_borr, int tier, char string[200]);
+void trimNewline(char *str);
+
 int Login();
 int EmailExists(char email[50]);
 
 
 int main(){
     char choice;
+    int x;
 
     // ascii art of LMS
 
     loadCounts();
     LMSHeading();
-    yellowPrint("USAIM\n");
-    brightwhitePrint("USAIM\n");
-    purplePrint("USAIM\n");
+    // yellowPrint("USAIM\n");
+    // brightwhitePrint("USAIM\n");
+    // purplePrint("USAIM\n");
 
     // validating choice of account
     do{
@@ -56,10 +64,10 @@ int main(){
         getchar();
         switch(choice){
             case 1:
-                int x = SignUp();
+                x = SignUp();
                 break;
             case 2:
-                int x = Login();
+                x = Login();
                 break;
             default:
                 redPrint("Invalid Choice. Try Again\n");
@@ -174,7 +182,7 @@ void saveCounts() {
 
 
 int SignUp(){
-    char email[50], password[30], name[30], contact[10];
+    char email[50], password[30], name[30], contact[15];
     int tier;
 
     while (1){
@@ -244,7 +252,7 @@ int EmailExists(char email[50]) {
 
     int id, currentlyBorrowed;
     float fine;
-    char storedEmail[50], password[30], name[50], contact[20], tier[15];
+    char storedEmail[50], password[30], name[50], contact[15], tier[15];
 
     // Read each line and extract fields separated by commas
     while (fscanf(fp, "%d,%[^,],%[^,],%[^,],%[^,],%f,%d,%s\n",
@@ -267,10 +275,15 @@ int EmailExists(char email[50]) {
     return 0; // Email not found
 }
 
-int CreateStr(int id, char email[50], char password[30], char name[30], char contact[10],
+int CreateStr(int id, char email[50], char password[30], char name[30], char contact[15],
               float fine, int curr_borr, int tier, char string[200]) {
 
     // Create formatted string safely
+    trimNewline(email);
+    trimNewline(password);
+    trimNewline(name);
+    trimNewline(contact);
+
     int written = sprintf(string, "%d,%s,%s,%s,%s,%.2f,%d,%d",
                           id, email, password, name, contact, fine, curr_borr, tier);
 
@@ -279,6 +292,11 @@ int CreateStr(int id, char email[50], char password[30], char name[30], char con
         return 0;
     else
         return 1;
+}
+void trimNewline(char *str){
+    int len = strlen(str);
+    if (len > 0 && str[len - 1] == '\n')
+        str[len - 1] = '\0';
 }
 
 int AppendToFile(const char *filename, const char *data) {
@@ -298,6 +316,9 @@ int Login(){
     printf("Enter Password: ");
     fgets(password, sizeof(password), stdin);
 
+    trimNewline(email);
+    trimNewline(password);
+
     FILE *fp = fopen("Users.txt", "r");
     if (fp == NULL) {
         redPrint("Error: could not open Users.txt\n");
@@ -306,7 +327,7 @@ int Login(){
 
     int id, currentlyBorrowed;
     float fine;
-    char storedEmail[50], storedPassword[30], name[50], contact[20], tier[15];
+    char storedEmail[50], storedPassword[30], name[50], contact[15], tier[15];
 
     // Read each line and extract fields separated by commas
     while (fscanf(fp, "%d,%[^,],%[^,],%[^,],%[^,],%f,%d,%s\n",

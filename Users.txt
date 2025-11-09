@@ -1,0 +1,2 @@
+1,usaim@gmail.com,usaim123,Usaim Khan,03211234567,0.00,0,3
+1,mehdi@gmail.com,mehdi123,Mehdi Shamsi,03115817543,0.00,0,2
