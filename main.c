@@ -398,6 +398,7 @@ void BorrowBook(){
             if (d > 7){
                 redPrint("You can borrow a book for a maximum of 7 days only. Try Again.\n");
             }
+            //max borrow check
 
         } while (d <= 0 || d > 7);
             
@@ -517,17 +518,17 @@ int FindBookName(char title[30]){
                   author,
                   &quantity) == 4)
     {
+        printf("Comparing %s with %s\n", storedTitle, title);
         if (strcmp(storedTitle, title) == 0 && quantity > 0) {
             fclose(fp);
             return id;// Book found
-        }else{
-            redPrint("Book not available(Does not exists or quantity is zero)\n");
-            return -1;
         }
+        
     }
+    redPrint("Book not available(Does not exists or quantity is zero)\n");
 
     fclose(fp);
-    return 0; // Book not found
+    return -1; // Book not found
 }
 void UpdateUser(){
     // open users.txt
@@ -591,7 +592,7 @@ void UpdateUser(){
     // Replace original file with temp file
     remove("Users.txt");
     rename("temp.txt", "Users.txt");
-    
+
 
 }
 void ReturnBook(){}

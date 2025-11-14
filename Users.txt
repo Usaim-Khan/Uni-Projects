@@ -1,4 +1,4 @@
 0,shehroz@gmail.com,shehroz123,Shehroz Arif,03217573933,0.00,0,3
 1,admin@admin.com,admin,Admin User,0000000000,0.00,0,1
-2,usaim1@khan.com,12341234,Usaim,03217564832,0.00,0,3
-3,usaim@gmail.com,usaim123,Usaim Khan,05438887123,0.00,1,3
+2,usaim1@khan.com,12341234,Usaim,03217564832,0.00,2,3
+3,usaim@gmail.com,usaim123,Usaim Khan,05438887123,0.00,2,3
