@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <windows.h>
 #include <string.h>
+#include <time.h>
+
 
 #define ADMIN_EMAIL "admin@admin.com"
 
@@ -41,7 +43,7 @@ void saveCounts();
 
 //signup functions
 int SignUp();
-int CreateStr(int id,char email[50],char password[30], char name[30], char contact[15], float fine, int curr_borr, int tier, char string[200]);
+int CreateUserLine(int id,char email[50],char password[30], char name[30], char contact[15], float fine, int curr_borr, int tier, char string[200]);
 void trimNewline(char *str);
 int AppendToFile(const char *filename, const char *data);
 
@@ -145,61 +147,35 @@ int main(){
     return 0;
 }
 
-void redPrint(char str[]){
+void ColorPrint(char str[],int color) {
+
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
-    SetConsoleTextAttribute(hConsole, 12); // Red text
+    SetConsoleTextAttribute(hConsole, color);
     printf("%s", str);
     
     SetConsoleTextAttribute(hConsole, 7);
+}
+void redPrint(char str[]){
+    ColorPrint(str,12);
 }
 void bluePrint(char str[]){
-        HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-
-
-    SetConsoleTextAttribute(hConsole, 3); //blue
-    printf("%s", str);
-    // for (int i =0; i<16; i++){
-    //     SetConsoleTextAttribute(hConsole, i);
-    //     printf("%s", str);
-    // }
-    
-    SetConsoleTextAttribute(hConsole, 7);
+    ColorPrint(str,9);
 }
 void greenPrint(char str[]){
-
-        HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-
-    SetConsoleTextAttribute(hConsole, 10); // green
-    printf("%s", str);
-    
-    SetConsoleTextAttribute(hConsole, 7);
+    ColorPrint(str,10);
 }
 void yellowPrint(char str[]) {
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-
-    SetConsoleTextAttribute(hConsole, 6); // Bright Yellow text
-    printf("%s", str);
-    
-    SetConsoleTextAttribute(hConsole, 7);  // Reset to default
+    ColorPrint(str,6);
 }
 void brightwhitePrint(char str[]) {
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-
-    SetConsoleTextAttribute(hConsole, 15); // Gray text
-    printf("%s", str);
-
-    
-    SetConsoleTextAttribute(hConsole, 7); // Reset to default
+    ColorPrint(str,15);
 }
 void purplePrint(char str[]) {
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-
-    SetConsoleTextAttribute(hConsole, 13); // Light Magenta (Purple) text
-    printf("%s", str);
-    
-    SetConsoleTextAttribute(hConsole, 7);  // Reset to default
+    ColorPrint(str,13);
 }
+
+
 void LMSHeading(){
     printf(" _     _ _                            __  __                                      \n");
     printf("| |   (_) |__  _ __ __ _ _ __ _   _  |  \\/  | __ _ _ __   __ _  __ _  ___         \n");
@@ -292,7 +268,7 @@ int SignUp(){
     // Function to write data to file in csv format
     // id,Email,Password,Name,Contact,fine,currently_borrowed,Tier (if error in this, return 0)
     char line[200];
-    int x = CreateStr(UCount,email,password,name,contact,0.0,0,tier,line);
+    int x = CreateUserLine(UCount,email,password,name,contact,0.0,0,tier,line);
     if (x){
         x = AppendToFile("Users.txt", line);
         if (!x){
@@ -351,7 +327,7 @@ int EmailExists(char email[50]) {
     fclose(fp);
     return 0; // Email not found
 }
-int CreateStr(int id, char email[50], char password[30], char name[30], char contact[15],
+int CreateUserLine(int id, char email[50], char password[30], char name[30], char contact[15],
               float fine, int curr_borr, int tier, char string[200]) {
 
     // Create formatted string safely
@@ -453,13 +429,291 @@ void Logout(){
 }
 
 
-void BorrowBook(){}
+void BorrowBook(){
+    char bookTitle[30];
+
+    printf("Enter a Book Title to Borrow: ");
+    fgets(bookTitle, sizeof(bookTitle), stdin);
+    int id = FindBookName(bookTitle);
+    if (id == -1){
+        return;
+    } else{
+        int days;
+        do
+        {
+            printf("Enter number of days to borrow: ");
+            scanf("%d", &days);
+            getchar();
+            if (days <= 0){
+                redPrint("Invalid number of days. Try Again.\n");
+            }
+            if (days > 7){
+                redPrint("You can borrow a book for a maximum of 7 days only. Try Again.\n");
+            }
+
+        } while (days <= 0 || days > 7);
+            
+        DecrementBookQuantity(id);
+        user.curr_borrowed++;
+        UpdateUser();  
+
+        //add record to borrows.txt
+
+        
+
+            
+        
+
+        greenPrint("Book Borrowed Successfully!\n");
+    }
+
+
+
+
+}
+
+void CreateBorrowLine(){}
+void DecrementBookQuantity(int bookID){
+    FILE *fp = fopen("Books.txt", "r");
+    if (fp == NULL) {
+        printf("Error: could not open Books.txt\n");
+        return; // File not found
+    }
+
+    FILE *temp = fopen("temp.txt", "w");
+    if (temp == NULL) {
+        fclose(fp);
+        printf("Error: could not create temporary file\n");
+        return;
+    }
+
+    int id, quantity;
+    char title[30], author[30];
+    // Read each line and extract fields separated by commas
+    while (fscanf(fp, "%d,%[^,],%[^,],%d\n",
+                  &id,
+                  title,
+                  author,
+                  &quantity) == 4)
+    {
+        if (id == bookID) {
+            quantity--; // Decrement quantity
+        }
+        fprintf(temp, "%d,%s,%s,%d\n", id, title, author, quantity);
+    }
+
+    fclose(fp);
+    fclose(temp);
+
+    // Replace original file with temp file
+    remove("Books.txt");
+    rename("temp.txt", "Books.txt");
+}
+int FindBookName(char title[30]){
+    FILE *fp = fopen("Books.txt", "r");
+    if (fp == NULL) {
+        printf("Error: could not open Books.txt\n");
+        return -1; // File not found
+    }
+
+    int id, quantity;
+    char storedTitle[30], author[30];
+
+    // Read each line and extract fields separated by commas
+    while (fscanf(fp, "%d,%[^,],%[^,],%d\n",
+                  &id,
+                  storedTitle,
+                  author,
+                  &quantity) == 4)
+    {
+        if (strcmp(storedTitle, title) == 0 && quantity > 0) {
+            fclose(fp);
+            return id;// Book found
+        }else{
+            redPrint("Book not available(Does not exists or quantity is zero)\n");
+            return -1;
+        }
+    }
+
+    fclose(fp);
+    return 0; // Book not found
+}
+void UpdateUser(){
+    // open users.txt
+    // read line by line
+    // if id matches, update the line with new data from user struct
+    // write to temp file
+    // replace users.txt with temp file
+    FILE *fp = fopen("Users.txt", "r");
+    if (fp == NULL) {
+        printf("Error: could not open Users.txt\n");
+        return; // File not found
+    }
+    FILE *temp = fopen("temp.txt", "w");
+    if (temp == NULL) {
+        fclose(fp);
+        printf("Error: could not create temporary file\n");
+        return;
+    }
+    int id, currentlyBorrowed;
+    float fine;
+    char storedEmail[50], password[30], name[50], contact[15], tier[15];
+
+    // Read each line and extract fields separated by commas
+    while (fscanf(fp, "%d,%[^,],%[^,],%[^,],%[^,],%f,%d,%s\n",
+                  &id,
+                  storedEmail,
+                  password,
+                  name,
+                  contact,
+                  &fine,
+                  &currentlyBorrowed,
+                  tier) == 8)
+    {
+        if (id == user.id) {
+            // Update line with new data from user struct
+            fprintf(temp, "%d,%s,%s,%s,%s,%.2f,%d,%d\n",
+                    user.id,
+                    user.email,
+                    password, // assuming password remains unchanged
+                    user.name,
+                    user.contact,
+                    user.fine,
+                    user.curr_borrowed,
+                    user.tier);
+        } else {
+            // Write original line
+            fprintf(temp, "%d,%s,%s,%s,%s,%.2f,%d,%s\n",
+                    id,
+                    storedEmail,
+                    password,
+                    name,
+                    contact,
+                    fine,
+                    currentlyBorrowed,
+                    tier);
+        }
+    }
+
+}
 void ReturnBook(){}
 void DisplayBooks(){}
 void PayFine(){}
 
 
-void AddBook(){}
-void RemoveUser(){}
-void ViewAllBorrowedBooks(){}
+void AddBook(){
+    char bookName[30], author[30];
+    int quantity;
+
+    if (strcmp(user.email, ADMIN_EMAIL) != 0){
+        redPrint("Only Admins can add books!\n");
+        return;
+    }
+    printf("Enter Book Name: ");
+    fgets(bookName, sizeof(bookName), stdin);
+    printf("Enter Author Name: ");
+    fgets(author, sizeof(author), stdin);
+    printf("Enter Quantity: ");
+    scanf("%d", &quantity);
+    getchar();
+
+    char line[200];
+    CreateBookLine(BCount, bookName, author, quantity, line);
+
+    int x = AppendToFile("Books.txt", line);
+    if (!x){
+        redPrint("Error in writing to file\n");
+        return;
+    }
+    BCount++;
+    saveCounts();
+    greenPrint("Book Added Successfully!\n");
+
+
+}
+
+int CreateBookLine(int id, char bookName[30], char author[30], int quantity, char string[200]){
+    int written;
+    trimNewline(bookName);
+    trimNewline(author);
+
+    sprintf(string, "%d,%s,%s,%d", id, bookName, author, quantity);
+
+        // Check for errors (sprintf returns number of chars written or negative if failed)
+    if (written < 0)
+        return 0;
+    else
+        return 1;
+
+}
+void RemoveUser(){
+    if (strcmp(user.email, ADMIN_EMAIL) != 0){
+        redPrint("Only Admins can remove users!\n");
+        return;
+    }
+    int id;
+    printf("Enter User ID to Remove: ");
+    scanf("%d", &id);
+    getchar();
+
+    int x = RemoveLineByID("Users.txt", id);
+    if (x){
+        greenPrint("User Removed Successfully!\n");
+    } else{
+        redPrint("User ID not found!\n");
+    }
+
+}
+
+int RemoveLineByID(const char *filename, int targetID) {
+    FILE *fp = fopen(filename, "r");
+    if (fp == NULL) return 0; // File open error
+
+    FILE *temp = fopen("temp.txt", "w");
+    if (temp == NULL) {
+        fclose(fp);
+        return 0;
+    }
+
+    char line[512];
+    int id;
+    int removed = 0;
+
+    while (fgets(line, sizeof(line), fp)) {
+        // Extract ID before first comma
+        if (sscanf(line, "%d", &id) == 1) {
+            if (id == targetID) {
+                removed = 1; // skip this line
+                continue;
+            }
+        }
+        fputs(line, temp); // keep other lines
+    }
+
+    fclose(fp);
+    fclose(temp);
+
+    // Replace original file with temp file
+    remove(filename);
+    rename("temp.txt", filename);
+
+    return removed; // 1 if removed, 0 if not found
+}
+
+void ViewAllBorrowedBooks(){
+
+}
 void ListBadMembers(){}
+
+
+
+
+
+void getCurrentDate(int *day, int *month, int *year) {
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+
+    *day = tm.tm_mday;
+    *month = tm.tm_mon + 1;   // months are 0-11
+    *year = tm.tm_year + 1900; // years since 1900
+}
