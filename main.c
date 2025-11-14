@@ -1,3 +1,9 @@
+// User.txt: UserId,Email,Password,Name,Contact,fine,currently_borrowed,Tier (if error in this, return 0)
+// Books.txt: BookId,BookName,Author,Quantity
+// Borrows.txt: BorrowId,UserID,BookID,BorrowDate,ReturnDate,DueDate
+
+
+
 #include <stdio.h>
 #include <windows.h>
 #include <string.h>
@@ -66,9 +72,10 @@ int main(){
     char choice;
     int x;
 
-    // ascii art of LMS
 
     loadCounts();
+
+    // ascii art of LMS
     LMSHeading();
 
     // validating choice of account
@@ -166,6 +173,7 @@ void saveCounts() {
     fclose(fp);
 }
 
+//DONE
 int SignUp(){
     char email[50], password[30], name[30], contact[15];
     int tier;
@@ -173,6 +181,7 @@ int SignUp(){
     while (1){
         printf("Enter Email: ");
         fgets(email, sizeof(email), stdin);
+        trimNewline(email);
 
         if (EmailExists(email)){
             redPrint("This email already exists in system. Use another email\n");
@@ -227,6 +236,7 @@ int SignUp(){
 
     return 1;
 }
+// Helper function
 int EmailExists(char email[50]) {
     FILE *fp = fopen("Users.txt", "r");
     if (fp == NULL) {
@@ -249,6 +259,7 @@ int EmailExists(char email[50]) {
                   &currentlyBorrowed,
                   tier) == 8)
     {
+        printf("%s vs %s\n", storedEmail, email);
         if (strcmp(storedEmail, email) == 0) {
             fclose(fp);
             return 1; // Email already exists
@@ -258,6 +269,7 @@ int EmailExists(char email[50]) {
     fclose(fp);
     return 0; // Email not found
 }
+// Helper function
 int CreateUserLine(int id, char email[50], char password[30], char name[30], char contact[15],
               float fine, int curr_borr, int tier, char string[200]) {
 
@@ -276,11 +288,13 @@ int CreateUserLine(int id, char email[50], char password[30], char name[30], cha
     else
         return 1;
 }
+// Helper function
 void trimNewline(char *str){
     int len = strlen(str);
     if (len > 0 && str[len - 1] == '\n')
         str[len - 1] = '\0';
 }
+// Helper function
 int AppendToFile(const char *filename, const char *data) {
     FILE *fp = fopen(filename, "a"); // open in append mode
     if (fp == NULL)
@@ -290,6 +304,8 @@ int AppendToFile(const char *filename, const char *data) {
     fclose(fp);
     return 1; // success
 }
+
+//DONE
 int Login(){
     char email[50], password[30];
 
@@ -344,7 +360,7 @@ int Login(){
 
 
 }
-
+// DONE
 void Logout(){
     isLoggedIn = 0;
 
@@ -365,35 +381,48 @@ void BorrowBook(){
 
     printf("Enter a Book Title to Borrow: ");
     fgets(bookTitle, sizeof(bookTitle), stdin);
+    trimNewline(bookTitle);
     int id = FindBookName(bookTitle);
     if (id == -1){
         return;
     } else{
-        int days;
+        int d;
         do
         {
             printf("Enter number of days to borrow: ");
-            scanf("%d", &days);
+            scanf("%d", &d);
             getchar();
-            if (days <= 0){
+            if (d <= 0){
                 redPrint("Invalid number of days. Try Again.\n");
             }
-            if (days > 7){
+            if (d > 7){
                 redPrint("You can borrow a book for a maximum of 7 days only. Try Again.\n");
             }
 
-        } while (days <= 0 || days > 7);
+        } while (d <= 0 || d > 7);
             
         DecrementBookQuantity(id);
         user.curr_borrowed++;
         UpdateUser();  
 
         //add record to borrows.txt
+        char line[200];
+        int day, month, year;
+        int newDay, newMonth, newYear;
+        getCurrentDate(&day, &month, &year);
+        addDays(day, month, year, d, &newDay, &newMonth, &newYear);
+        CreateBorrowLine(BorrCount, user.id, id,
+                         day, month, year,
+                         newDay, newMonth, newYear,
+                         line);
 
-        
-
-            
-        
+        int x = AppendToFile("Borrows.txt", line);
+        if (!x){
+            redPrint("Error in writing to file\n");
+            return;
+        }
+        BorrCount++;
+        saveCounts();
 
         greenPrint("Book Borrowed Successfully!\n");
     }
@@ -403,7 +432,38 @@ void BorrowBook(){
 
 }
 
-void CreateBorrowLine(){}
+void addDays(int day, int month, int year, int daysToAdd,
+             int *newDay, int *newMonth, int *newYear) {
+    
+    struct tm date = {0};
+    date.tm_mday = day;
+    date.tm_mon = month - 1;       // struct tm months: 0-11
+    date.tm_year = year - 1900;    // struct tm years: since 1900
+
+    date.tm_mday += daysToAdd;     // add days
+
+    mktime(&date);                 // normalize the date
+
+    *newDay = date.tm_mday;
+    *newMonth = date.tm_mon + 1;
+    *newYear = date.tm_year + 1900;
+}
+
+void CreateBorrowLine(int borrowId, int userId, int bookId, 
+                      int borrowDay, int borrowMonth, int borrowYear,
+                      int dueDay, int dueMonth, int dueYear,
+                      char string[200]){
+    // Borrows.txt: BorrowId,UserID,BookID,BorrowDate,ReturnDate,DueDate
+
+    sprintf(string, "%d,%d,%d,%02d-%02d-%04d,%02d-%02d-%04d",
+            borrowId, userId, bookId,
+            borrowDay, borrowMonth, borrowYear,
+            dueDay, dueMonth, dueYear);
+
+
+}
+
+
 void DecrementBookQuantity(int bookID){
     FILE *fp = fopen("Books.txt", "r");
     if (fp == NULL) {
@@ -526,12 +586,20 @@ void UpdateUser(){
         }
     }
 
+    fclose(fp);
+    fclose(temp);
+    // Replace original file with temp file
+    remove("Users.txt");
+    rename("temp.txt", "Users.txt");
+    
+
 }
 void ReturnBook(){}
 void DisplayBooks(){}
 void PayFine(){}
 
 
+//DONE 
 void AddBook(){
     char bookName[30], author[30];
     int quantity;
@@ -562,7 +630,6 @@ void AddBook(){
 
 
 }
-
 int CreateBookLine(int id, char bookName[30], char author[30], int quantity, char string[200]){
     int written;
     trimNewline(bookName);
@@ -577,6 +644,8 @@ int CreateBookLine(int id, char bookName[30], char author[30], int quantity, cha
         return 1;
 
 }
+
+//DONE
 void RemoveUser(){
     if (strcmp(user.email, ADMIN_EMAIL) != 0){
         redPrint("Only Admins can remove users!\n");
@@ -587,6 +656,7 @@ void RemoveUser(){
     scanf("%d", &id);
     getchar();
 
+
     int x = RemoveLineByID("Users.txt", id);
     if (x){
         greenPrint("User Removed Successfully!\n");
@@ -596,6 +666,7 @@ void RemoveUser(){
 
 }
 
+//Helper function
 int RemoveLineByID(const char *filename, int targetID) {
     FILE *fp = fopen(filename, "r");
     if (fp == NULL) return 0; // File open error
