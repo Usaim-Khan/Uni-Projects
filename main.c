@@ -596,10 +596,52 @@ void UpdateUser(){
 
 }
 void ReturnBook(){}
-void DisplayBooks(){}
-void PayFine(){}
 
+//DONE
+void DisplayBooks(){
+    // open Books.txt
+    FILE *fp = fopen("Books.txt", "r");
+    if (fp == NULL) {
+        printf("Error: could not open Books.txt\n");
+        return; // File not found
+    }
+    int id, quantity;
+    char title[30], author[30];
+    printf("Books Available in Library:\n");
+    printf("%-5s %-40s %-25s %-5s\n", "ID", "Title", "Author", "Qty");
+    printf("-----------------------------------------------------------------------------\n");
+    // Read each line and extract fields separated by commas
+    while (fscanf(fp, "%d,%[^,],%[^,],%d\n",
+                  &id,
+                  title,
+                  author,
+                  &quantity) == 4)
+    {
+        printf("%-5d %-40s %-25s %-5d\n", id, title, author, quantity);
+    }
+    fclose(fp);
+}
+//DONE
+void PayFine(){
+    float amount;
+    printf("Your current fine is: %.2f\n", user.fine);
+    printf("Enter amount to pay: ");
+    scanf("%f", &amount);
+    getchar();
 
+    if (amount <= 0){
+        redPrint("Invalid amount. Try Again.\n");
+        return;
+    }
+    if (amount > user.fine){
+        redPrint("You cannot pay more than your current fine. Try Again.\n");
+        return;
+    }
+
+    user.fine -= amount;
+    UpdateUser();
+    greenPrint("Fine Paid Successfully!\n");
+}
 //DONE 
 void AddBook(){
     char bookName[30], author[30];
