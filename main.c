@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <string.h>
 #include <time.h>
+#include "ui.h"
 
 
 #define ADMIN_EMAIL "admin@admin.com"
@@ -24,19 +25,6 @@ int isLoggedIn = 0;
 
 int UCount=0, BCount=0, BorrCount=0;
 
-//printng functions
-void redPrint(char str[]);
-void bluePrint(char str[]);
-void greenPrint(char str[]);
-void yellowPrint(char str[]);
-void brightwhitePrint(char str[]);
-void purplePrint(char str[]);
-void LMSHeading();
-void LoginMenu();
-void MainMenu();
-void AdminMenu();
-
-
 // initialization functions
 void loadCounts();
 void saveCounts();
@@ -57,12 +45,21 @@ void BorrowBook();
 void ReturnBook();
 void DisplayBooks();
 void PayFine();
+void DecrementBookQuantity(int bookID);
+int FindBookName(char title[30]);
+void UpdateUser();
+void CreateBorrowLine();
 
 // admin functionalities
 void AddBook();
 void RemoveUser();
 void ViewAllBorrowedBooks();
 void ListBadMembers();
+int CreateBookLine(int id, char bookName[30], char author[30], int quantity, char string[200]);
+int RemoveLineByID(const char *filename, int targetID);
+
+// utility functions
+void getCurrentDate(int *day, int *month, int *year);
 
 
 int main(){
@@ -73,9 +70,6 @@ int main(){
 
     loadCounts();
     LMSHeading();
-    // yellowPrint("USAIM\n");
-    // brightwhitePrint("USAIM\n");
-    // purplePrint("USAIM\n");
 
     // validating choice of account
     do{
@@ -147,69 +141,6 @@ int main(){
     return 0;
 }
 
-void ColorPrint(char str[],int color) {
-
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-
-    SetConsoleTextAttribute(hConsole, color);
-    printf("%s", str);
-    
-    SetConsoleTextAttribute(hConsole, 7);
-}
-void redPrint(char str[]){
-    ColorPrint(str,12);
-}
-void bluePrint(char str[]){
-    ColorPrint(str,9);
-}
-void greenPrint(char str[]){
-    ColorPrint(str,10);
-}
-void yellowPrint(char str[]) {
-    ColorPrint(str,6);
-}
-void brightwhitePrint(char str[]) {
-    ColorPrint(str,15);
-}
-void purplePrint(char str[]) {
-    ColorPrint(str,13);
-}
-
-
-void LMSHeading(){
-    printf(" _     _ _                            __  __                                      \n");
-    printf("| |   (_) |__  _ __ __ _ _ __ _   _  |  \\/  | __ _ _ __   __ _  __ _  ___         \n");
-    printf("| |   | | '_ \\| '__/ _` | '__| | | | | |\\/| |/ _` | '_ \\ / _` |/ _` |/ _ \\  _____ \n");
-    printf("| |___| | |_) | | | (_| | |  | |_| | | |  | | (_| | | | | (_| | (_| |  __/ |_____| \n");
-    printf("|_____|_|_.__/|_|  \\__,_|_|   \\__, | |_|  |_|\\__,_|_| |_|\\__,_|\\__, |\\___|        \n");
-    printf("                      _     __|___/         _                  |___/               \n");
-    printf(" _ __ ___   ___ _ __ | |_  / ___| _   _ ___| |_ ___ _ __ ___                      \n");
-    printf("| '_ ` _ \\ / _ \\ '_ \\| __| \\___ \\| | | / __| __/ _ \\ '_ ` _ \\                     \n");
-    printf("| | | | | |  __/ | | | |_   ___) | |_| \\__ \\ ||  __/ | | | | |                    \n");
-    printf("|_| |_| |_|\\___|_| |_|\\__| |____/ \\__, |___/\\__\\___|_| |_| |_|                    \n");
-    printf("                                  |___/                                           \n");
-
-}
-void LoginMenu(){
-    printf("1 - Sign Up\n");
-    printf("2 - Login\n");
-    printf("Enter Your Choice: ");
-}
-void MainMenu(){
-    printf("1 - Borrow A Book\n");
-    printf("2 - Return A Book\n");
-    printf("3 - Pay Fine\n");
-    printf("4 - View Books in Library\n");
-    printf("5 - Logout\n");
-
-}
-void AdminMenu(){
-    printf("6 - Add Book\n");
-    printf("7 - Remove A User\n");
-    printf("8 - View All Borrowed Books \n");
-    printf("9 - List Bad Members\n");
-
-}
 
 void loadCounts() {
     FILE *fp = fopen("meta.txt", "r");
