@@ -1,3 +1,3 @@
-0,admin@admin.com,admin,ADMIN,03211111111,0.00,0,3
+0,admin@admin.com,admin,ADMIN,03211111111,0.00,3,3
 1,usaim@gmail.com,usaim123,Usaim Khan,03112323232,0.00,0,3
 2,mehdi@gmail.com,mehdi123,Mehdi Shamsi,09328767676,0.00,2,2

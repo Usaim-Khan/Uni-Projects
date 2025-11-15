@@ -863,6 +863,8 @@ void RemoveBook(){
     getchar();
     int x = RemoveLineByID("Books.txt", id);
     if (x){
+        BCount--;
+        saveCounts();
         greenPrint("Book Removed Successfully!\n");
     } else{
         redPrint("Book ID not found!\n");
@@ -912,10 +914,13 @@ void RemoveUser(){
 
     int x = RemoveLineByID("Users.txt", id);
     if (x){
+        UCount--;
+        saveCounts();
         greenPrint("User Removed Successfully!\n");
     } else{
         redPrint("User ID not found!\n");
     }
+
 
 }
 

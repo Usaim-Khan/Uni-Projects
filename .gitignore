@@ -1,2 +1,5 @@
 *.exe
 *.o
+*.log
+input.txt
+output.txt
