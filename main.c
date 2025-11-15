@@ -499,7 +499,7 @@ void DecrementBookQuantity(int bookID,int flag){
         printf("Error: could not open Books.txt\n");
         return; // File not found
     }
-    FILE *temp = fopen("temp.txt", "w");
+    FILE *temp = fopen("tempforbook.txt", "w");
     if (temp == NULL) {
         fclose(fp);
         printf("Error: could not create temporary file\n");
@@ -528,7 +528,7 @@ void DecrementBookQuantity(int bookID,int flag){
     fclose(temp);
     // Replace original file with temp file
     remove("Books.txt");
-    rename("temp.txt", "Books.txt");
+    rename("tempforbook.txt", "Books.txt");
 
 
 }
@@ -574,7 +574,7 @@ void UpdateUser(){
         printf("Error: could not open Users.txt\n");
         return; // File not found
     }
-    FILE *temp = fopen("temp.txt", "w");
+    FILE *temp = fopen("tempforuser.txt", "w");
     if (temp == NULL) {
         fclose(fp);
         printf("Error: could not create temporary file\n");
@@ -624,7 +624,7 @@ void UpdateUser(){
     fclose(temp);
     // Replace original file with temp file
     remove("Users.txt");
-    rename("temp.txt", "Users.txt");
+    rename("tempforuser.txt", "Users.txt");
 
 
 }
@@ -693,7 +693,8 @@ void ReturnBook(){
         printf("Error: could not open Borrows.txt\n");
         return; // File not found
     }
-    FILE *temp = fopen("temp.txt", "w");
+    // temp file to write updated data of borrows.txt
+    FILE *temp = fopen("tempforborrow.txt", "w");
     if (temp == NULL) {
         fclose(fp);
         printf("Error: could not create temporary file\n");
@@ -742,10 +743,11 @@ void ReturnBook(){
         }
     }
 
-
-
-
-
+    fclose(fp);
+    fclose(temp);
+    // Replace original file with temp file
+    remove("Borrows.txt");
+    rename("tempforborrow.txt", "Borrows.txt");
 
 
 
