@@ -17,5 +17,6 @@ void LMSHeading();
 void LoginMenu();
 void MainMenu();
 void AdminMenu();
+void ExitMenu();
 
 #endif

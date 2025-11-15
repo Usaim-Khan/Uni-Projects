@@ -79,71 +79,60 @@ int main(){
     // ascii art of LMS
     LMSHeading();
 
-    // validating choice of account
-    do{
-        LoginMenu();
-        scanf("%d", &choice);
-        getchar();
-        switch(choice){
-            case 1:
-                SignUp(); break;
-            case 2:
-                Login(); break;
-            default:
-                redPrint("Invalid Choice. Try Again\n");
+    while(1){
+        // validating choice of account
+        do{
+            if (isLoggedIn){
+                break;
+            }
+            LoginMenu();
+            scanf("%d", &choice);
+            getchar();
+            switch(choice){
+                case 1:
+                    SignUp(); break;
+                case 2:
+                    Login(); break;
+                default:
+                    redPrint("Invalid Choice. Try Again\n");
+            }
+            if (!isLoggedIn){
+                yellowPrint("You need to be logged in to continue\n");
+            }
+
+        }while(choice<1 || choice >2 || !isLoggedIn);
+
+        // we ensured that user is logged in here
+
+        while (1){
+            if (!isLoggedIn){
+                break;
+            }
+            MainMenu();
+            if(strcmp(user.email, ADMIN_EMAIL) == 0){
+                AdminMenu();
+            }
+            ExitMenu();
+            printf("Enter Your Choice: ");
+            scanf("%d", &choice);
+            getchar();
+
+            switch (choice){
+            case 1: BorrowBook(); break;
+            case 2:ReturnBook();break;
+            case 3: PayFine(); break;
+            case 4: DisplayBooks(); break;
+            case 5: AddBook();break;
+            case 6: RemoveUser(); break;
+            case 7: ViewAllBorrowedBooks(); break;
+            case 8: ListBadMembers(); break;
+            case 9: Logout(); break;
+            case 10: exit(0);
+            default: redPrint("Invalid Choice\n"); break;
+            }
+
         }
-        if (!isLoggedIn){
-            yellowPrint("You need to be logged in to continue\n");
-            continue;
-        }
-
-    }while(choice<1 || choice >2);
-
-    // we ensured that user is logged in here
-
-
-    MainMenu();
-    if(strcmp(user.email, ADMIN_EMAIL) == 0){
-        AdminMenu();
-    }
-    printf("Enter Your Choice: ");
-    scanf("%d", &choice);
-    getchar();
-
-
-    switch (choice)
-    {
-    case 1:
-        BorrowBook();
-        break;
-    case 2:
-        ReturnBook();
-        break;
-    case 3:
-        PayFine();
-        break;
-    case 4:
-        DisplayBooks();
-        break;
-    case 5:
-        Logout();
-        break;
-    case 6:
-        AddBook();
-        break;
-    case 7:
-        RemoveUser();
-        break;
-    case 8:
-        ViewAllBorrowedBooks();
-        break;
-    case 9:
-        ListBadMembers();
-        break;
-    
-    default:
-    redPrint("Invalid Choice\n");
-        break;
+            
     }
 
     return 0;

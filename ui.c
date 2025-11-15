@@ -44,13 +44,18 @@ void MainMenu() {
     printf("2 - Return A Book\n");
     printf("3 - Pay Fine\n");
     printf("4 - View Books in Library\n");
-    printf("5 - Logout\n");
+
 }
 
 void AdminMenu() {
     // remove book option to add
-    printf("6 - Add Book\n");
-    printf("7 - Remove A User\n");
-    printf("8 - View All Borrowed Books\n");
-    printf("9 - List Bad Members\n");
+    printf("5 - Add Book\n");
+    printf("6 - Remove A User\n");
+    printf("7 - View All Borrowed Books\n");
+    printf("8 - List Bad Members\n");
+}
+
+void ExitMenu() {
+    printf("9 - Logout\n");
+    printf("10 - Exit\n");
 }
