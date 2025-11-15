@@ -48,6 +48,7 @@ void MainMenu() {
 }
 
 void AdminMenu() {
+    // remove book option to add
     printf("6 - Add Book\n");
     printf("7 - Remove A User\n");
     printf("8 - View All Borrowed Books\n");

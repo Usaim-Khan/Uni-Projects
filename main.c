@@ -21,7 +21,8 @@ typedef struct {
     int tier;
     float fine;
     int curr_borrowed;
-
+    int max_borrow;
+    float fine_rate;
     
 } User;
 
@@ -51,7 +52,7 @@ void BorrowBook();
 void ReturnBook();
 void DisplayBooks();
 void PayFine();
-void DecrementBookQuantity(int bookID);
+void DecrementBookQuantity(int bookID ,int flag);
 int FindBookName(char title[30]);
 void UpdateUser();
 void CreateBorrowLine();
@@ -148,7 +149,7 @@ int main(){
     return 0;
 }
 
-
+//DONE
 void loadCounts() {
     FILE *fp = fopen("meta.txt", "r");
     if (fp == NULL) {
@@ -162,6 +163,7 @@ void loadCounts() {
     fscanf(fp, "%d %d %d", &UCount, &BCount, &BorrCount);
     fclose(fp);
 }
+//DONE
 void saveCounts() {
     FILE *fp = fopen("meta.txt", "w");
     if (fp == NULL) {
@@ -231,11 +233,33 @@ int SignUp(){
     UCount++;
     saveCounts();
     isLoggedIn = 1;
+    TierSpecifics(tier);
     greenPrint("Sign Up Successful!\n");
     //---------------------------
 
     return 1;
 }
+
+void TierSpecifics(int tier){
+    switch(tier){
+        case 1:
+            user.max_borrow = 3;
+            user.fine_rate = 100;
+            break;
+        case 2:
+            user.max_borrow = 5;
+            user.fine_rate = 75;
+            break;
+        case 3:
+            user.max_borrow = 7;
+            user.fine_rate = 50;
+            break;
+        default:
+            printf("Invalid tier. Setting to default values.\n");
+            break;
+    }
+}
+
 // Helper function
 int EmailExists(char email[50]) {
     FILE *fp = fopen("Users.txt", "r");
@@ -349,6 +373,7 @@ int Login(){
             user.tier = atoi(tier);
             isLoggedIn = 1;
             fclose(fp);
+            TierSpecifics(user.tier);
             greenPrint("Login Successful!\n");
             return 1;
         }
@@ -375,7 +400,7 @@ void Logout(){
     greenPrint("Logged Out Successfully!\n");
 }
 
-
+// DONE
 void BorrowBook(){
     char bookTitle[30];
 
@@ -402,7 +427,7 @@ void BorrowBook(){
 
         } while (d <= 0 || d > 7);
             
-        DecrementBookQuantity(id);
+        DecrementBookQuantity(id, 0); // decrement quantity
         user.curr_borrowed++;
         UpdateUser();  
 
@@ -433,6 +458,7 @@ void BorrowBook(){
 
 }
 
+// Helper function
 void addDays(int day, int month, int year, int daysToAdd,
              int *newDay, int *newMonth, int *newYear) {
     
@@ -450,13 +476,24 @@ void addDays(int day, int month, int year, int daysToAdd,
     *newYear = date.tm_year + 1900;
 }
 
+// Helper function
+void getCurrentDate(int *day, int *month, int *year) {
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+
+    *day = tm.tm_mday;
+    *month = tm.tm_mon + 1;   // months are 0-11
+    *year = tm.tm_year + 1900; // years since 1900
+}
+
+// Helper function
 void CreateBorrowLine(int borrowId, int userId, int bookId, 
                       int borrowDay, int borrowMonth, int borrowYear,
                       int dueDay, int dueMonth, int dueYear,
                       char string[200]){
     // Borrows.txt: BorrowId,UserID,BookID,BorrowDate,ReturnDate,DueDate
 
-    sprintf(string, "%d,%d,%d,%02d-%02d-%04d,%02d-%02d-%04d",
+    sprintf(string, "%d,%d,%d,%02d-%02d-%04d,NULL,%02d-%02d-%04d",
             borrowId, userId, bookId,
             borrowDay, borrowMonth, borrowYear,
             dueDay, dueMonth, dueYear);
@@ -464,21 +501,21 @@ void CreateBorrowLine(int borrowId, int userId, int bookId,
 
 }
 
-
-void DecrementBookQuantity(int bookID){
+// Helper function
+void DecrementBookQuantity(int bookID,int flag){
+    // if flag is 1, increment quantity instead of decrementing
+    // if flag is 0, decrement quantity
     FILE *fp = fopen("Books.txt", "r");
     if (fp == NULL) {
         printf("Error: could not open Books.txt\n");
         return; // File not found
     }
-
     FILE *temp = fopen("temp.txt", "w");
     if (temp == NULL) {
         fclose(fp);
         printf("Error: could not create temporary file\n");
         return;
     }
-
     int id, quantity;
     char title[30], author[30];
     // Read each line and extract fields separated by commas
@@ -489,18 +526,24 @@ void DecrementBookQuantity(int bookID){
                   &quantity) == 4)
     {
         if (id == bookID) {
-            quantity--; // Decrement quantity
+            if (flag == 0){
+                quantity--; // Decrement quantity
+            } else{
+                quantity++; // Increment quantity
+            }
         }
+        // Write updated line to temp file
         fprintf(temp, "%d,%s,%s,%d\n", id, title, author, quantity);
     }
-
     fclose(fp);
     fclose(temp);
-
     // Replace original file with temp file
     remove("Books.txt");
     rename("temp.txt", "Books.txt");
+
+
 }
+// Helper function
 int FindBookName(char title[30]){
     FILE *fp = fopen("Books.txt", "r");
     if (fp == NULL) {
@@ -530,6 +573,7 @@ int FindBookName(char title[30]){
     fclose(fp);
     return -1; // Book not found
 }
+//Helper function
 void UpdateUser(){
     // open users.txt
     // read line by line
@@ -595,7 +639,128 @@ void UpdateUser(){
 
 
 }
-void ReturnBook(){}
+
+void ReturnBook(){
+    // go through borrows.txt
+    // find records with user id = user.id and where return date is "NULL"
+    // display those books with due dates
+    // ask which book to return
+
+    FILE *fp = fopen("Borrows.txt", "r");
+    if (fp == NULL) {
+        printf("Error: could not open Borrows.txt\n");
+        return; // File not found
+    }
+    int borrowId, userId, bookId;
+    char borrowDate[15], returnDate[15], dueDate[15];
+
+    //an array to store book names at their ids index
+
+    char bookNames[100][30];
+    // go through books.txt and store book names in synced array
+    FILE *bookFp = fopen("Books.txt", "r");
+    if (bookFp == NULL) {
+        printf("Error: could not open Books.txt\n");
+        fclose(fp);
+        return; // File not found
+    }
+    int bId;
+    char title[30];
+
+    while (fscanf(bookFp, "%d,%[^,],%*[^,],%*d\n",
+                  &bId,
+                  title) == 2)
+    {
+        strcpy(bookNames[bId], title);
+    }
+    fclose(bookFp);
+
+    printf("Books You Have Borrowed:\n");
+    printf("%-5s %-40s %-15s %-15s\n", "ID", "Title", "Due Date", "Return Date");
+    printf("-----------------------------------------------------------------------------\n");
+    // Read each line and extract fields separated by commas
+    while (fscanf(fp, "%d,%d,%d,%[^,],%[^,],%[^,\n]\n",
+                  &borrowId,
+                  &userId,
+                  &bookId,
+                  borrowDate,
+                  returnDate,
+                  dueDate) == 6)
+    {
+        if (userId == user.id && strcmp(returnDate, "NULL") == 0){
+            printf("%-5d %-40s %-15s %-15s\n", borrowId, bookNames[bookId], dueDate);
+        }
+    }
+
+    fclose(fp);
+
+    printf("Enter Borrow ID of the book you want to return: ");
+    int borrowIDToReturn;
+    scanf("%d", &borrowIDToReturn);
+    getchar();
+    // Now, update the return date of this borrow record to current date
+    fp = fopen("Borrows.txt", "r");
+    if (fp == NULL) {
+        printf("Error: could not open Borrows.txt\n");
+        return; // File not found
+    }
+    FILE *temp = fopen("temp.txt", "w");
+    if (temp == NULL) {
+        fclose(fp);
+        printf("Error: could not create temporary file\n");
+        return;
+    }
+    int found = 0;
+    int day, month, year;
+    getCurrentDate(&day, &month, &year);
+    char currentDateStr[15];
+    sprintf(currentDateStr, "%02d-%02d-%04d", day, month, year);
+    // Read each line and extract fields separated by commas
+
+    while (fscanf(fp, "%d,%d,%d,%[^,],%[^,],%[^,\n]\n",
+                  &borrowId,
+                  &userId,
+                  &bookId,
+                  borrowDate,
+                  returnDate,
+                  dueDate) == 6)
+    {
+        if (borrowId == borrowIDToReturn && userId == user.id && strcmp(returnDate, "NULL") == 0){
+            // Update return date to current date
+            fprintf(temp, "%d,%d,%d,%s,%s,%s\n",
+                    borrowId,
+                    userId,
+                    bookId,
+                    borrowDate,
+                    currentDateStr,
+                    dueDate);
+            found = 1;
+            // Increment book quantity
+            DecrementBookQuantity(bookId,1); // increment quantity
+            user.curr_borrowed--;
+            UpdateUser();
+            greenPrint("Book Returned Successfully!\n");
+
+        } else {
+            // Write original line
+            fprintf(temp, "%d,%d,%d,%s,%s,%s\n",
+                    borrowId,
+                    userId,
+                    bookId,
+                    borrowDate,
+                    returnDate,
+                    dueDate);
+        }
+    }
+
+
+
+
+
+
+
+
+}
 
 //DONE
 void DisplayBooks(){
@@ -753,12 +918,3 @@ void ListBadMembers(){}
 
 
 
-
-void getCurrentDate(int *day, int *month, int *year) {
-    time_t t = time(NULL);
-    struct tm tm = *localtime(&t);
-
-    *day = tm.tm_mday;
-    *month = tm.tm_mon + 1;   // months are 0-11
-    *year = tm.tm_year + 1900; // years since 1900
-}
