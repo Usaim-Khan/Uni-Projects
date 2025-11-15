@@ -81,7 +81,7 @@ int AppendToFile(const char *filename, const char *data);
 
 
 int main(){
-    char choice;
+    int choice;
 
     loadCounts();
 
@@ -95,7 +95,7 @@ int main(){
                 break;
             }
             LoginMenu();
-            scanf("%c", &choice);
+            scanf("%d", &choice);
             getchar();
             switch(choice){
                 case 1:
@@ -123,7 +123,7 @@ int main(){
             }
             ExitMenu();
             printf("Enter Your Choice: ");
-            scanf("%c", &choice);
+            scanf("%d", &choice);
             getchar();
 
             switch (choice){
@@ -431,7 +431,7 @@ void ReturnBook(){
     {
         if (userId == user.id && strcmp(returnDate, "NULL") == 0){
             foundAny = 1;
-            printf("%-5d %-40s %-15s\n", borrowId, bookNames[bookId], dueDate);
+                printf("%-5d %-40s\n", borrowId, bookNames[bookId]);
         }
     }
     printf("\n-----------------------------------------------------------------------------\n");  
