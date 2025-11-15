@@ -665,8 +665,9 @@ void ReturnBook(){
     fclose(bookFp);
 
     printf("Books You Have Borrowed:\n");
-    printf("%-5s %-40s %-15s %-15s\n", "ID", "Title", "Due Date", "Return Date");
-    printf("-----------------------------------------------------------------------------\n");
+    printf("%-5s %-40s %-15s\n", "ID", "Title", "Due Date");
+    printf("--------------------------------------------------------------\n");
+    int foundAny = 0;
     // Read each line and extract fields separated by commas
     while (fscanf(fp, "%d,%d,%d,%[^,],%[^,],%[^,\n]\n",
                   &borrowId,
@@ -677,12 +678,17 @@ void ReturnBook(){
                   dueDate) == 6)
     {
         if (userId == user.id && strcmp(returnDate, "NULL") == 0){
+            foundAny = 1;
             printf("%-5d %-40s %-15s %-15s\n", borrowId, bookNames[bookId], dueDate);
         }
     }
+    printf("\n-----------------------------------------------------------------------------\n");  
 
     fclose(fp);
-
+    if (!foundAny){
+        yellowPrint("You have no borrowed books to return.\n");
+        return;
+    }
     printf("Enter Borrow ID of the book you want to return: ");
     int borrowIDToReturn;
     scanf("%d", &borrowIDToReturn);
@@ -743,6 +749,9 @@ void ReturnBook(){
         }
     }
 
+    if (!found){
+        redPrint("No matching borrow record found for the given Borrow ID.\n");
+    }
     fclose(fp);
     fclose(temp);
     // Replace original file with temp file
