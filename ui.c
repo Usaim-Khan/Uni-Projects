@@ -19,6 +19,7 @@ void purplePrint(char str[]) { ColorPrint(str, 13); }
 
 
 // UI / MENU FUNCTIONS
+
 void LMSHeading() {
     printf(" _     _ _                            __  __                                      \n");
     printf("| |   (_) |__  _ __ __ _ _ __ _   _  |  \\/  | __ _ _ __   __ _  __ _  ___         \n");
@@ -49,13 +50,15 @@ void MainMenu() {
 
 void AdminMenu() {
     // remove book option to add
-    printf("5 - Add Book\n");
+    printf("5 - Add A Book\n");
     printf("6 - Remove A User\n");
     printf("7 - View All Borrowed Books\n");
-    printf("8 - List Bad Members\n");
+    printf("8 - Remove A Book\n");
 }
 
 void ExitMenu() {
     printf("9 - Logout\n");
     printf("10 - Exit\n");
 }
+
+

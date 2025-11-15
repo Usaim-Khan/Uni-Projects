@@ -55,24 +55,34 @@ void PayFine();
 void DecrementBookQuantity(int bookID ,int flag);
 int FindBookName(char title[30]);
 void UpdateUser();
-void CreateBorrowLine();
+void CreateBorrowLine(int borrowId, int userId, int bookId, 
+                      int borrowDay, int borrowMonth, int borrowYear,
+                      int dueDay, int dueMonth, int dueYear,
+                      char string[200]);
 
 // admin functionalities
 void AddBook();
 void RemoveUser();
 void ViewAllBorrowedBooks();
-void ListBadMembers();
+void RemoveBook();
 int CreateBookLine(int id, char bookName[30], char author[30], int quantity, char string[200]);
 int RemoveLineByID(const char *filename, int targetID);
 
 // utility functions
 void getCurrentDate(int *day, int *month, int *year);
+void TierSpecifics(int tier);
+void getUserNamesArray(char userNames[100][30]);
+void getBookNamesArray(char bookNames[100][30]);
+void CreateBorrowLine(int borrowId, int userId, int bookId, 
+                      int borrowDay, int borrowMonth, int borrowYear,
+                      int dueDay, int dueMonth, int dueYear,
+                      char string[200]);
+
 
 
 int main(){
     char choice;
     int x;
-
 
     loadCounts();
 
@@ -125,7 +135,7 @@ int main(){
             case 5: AddBook();break;
             case 6: RemoveUser(); break;
             case 7: ViewAllBorrowedBooks(); break;
-            case 8: ListBadMembers(); break;
+            case 8: RemoveBook(); break;
             case 9: Logout(); break;
             case 10: exit(0);
             default: redPrint("Invalid Choice\n"); break;
@@ -188,9 +198,9 @@ int SignUp(){
     printf("Enter Contact Num: ");
     fgets(contact, sizeof(contact), stdin);
     printf("TIERS\n");
-    brightwhitePrint("1 - Silver\n");
-    yellowPrint("2 - Gold\n");
-    purplePrint("3 - Platinium\n");
+    brightwhitePrint("1 - Silver: 3 Borrows at a time and fine of Rs100 per day if nook not returned\n");
+    yellowPrint("2 - Gold: 5 Borrows at a time and fine of Rs75 per day if nook not returned\n");
+    purplePrint("3 - Platinium: 7 Borrows at a time and fine of Rs50 per day if nook not returned\n");
 
     printf("Enter Tier: ");
     scanf("%d", &tier);
@@ -439,10 +449,12 @@ void BorrowBook(){
         BorrCount++;
         saveCounts();
 
-        greenPrint("Book Borrowed Successfully!\n");
+        //create a string message displaying user name, book name, and due date
+        char message[200];
+        sprintf(message, "Book '%s' successfully borrowed by %s. Due date: %02d-%02d-%04d\n",
+                bookTitle, user.name, newDay, newMonth, newYear);
+        greenPrint(message);
     }
-
-
 
 
 }
@@ -629,6 +641,7 @@ void UpdateUser(){
 
 }
 
+// DONE
 void ReturnBook(){
     // go through borrows.txt
     // find records with user id = user.id and where return date is "NULL"
@@ -646,23 +659,7 @@ void ReturnBook(){
     //an array to store book names at their ids index
 
     char bookNames[100][30];
-    // go through books.txt and store book names in synced array
-    FILE *bookFp = fopen("Books.txt", "r");
-    if (bookFp == NULL) {
-        printf("Error: could not open Books.txt\n");
-        fclose(fp);
-        return; // File not found
-    }
-    int bId;
-    char title[30];
-
-    while (fscanf(bookFp, "%d,%[^,],%*[^,],%*d\n",
-                  &bId,
-                  title) == 2)
-    {
-        strcpy(bookNames[bId], title);
-    }
-    fclose(bookFp);
+    getBookNamesArray(bookNames);
 
     printf("Books You Have Borrowed:\n");
     printf("%-5s %-40s %-15s\n", "ID", "Title", "Due Date");
@@ -731,7 +728,35 @@ void ReturnBook(){
                     currentDateStr,
                     dueDate);
             found = 1;
+            //check for fine
+            int dueDay, dueMonth, dueYear;
+            sscanf(dueDate, "%02d-%02d-%04d", &dueDay, &dueMonth, &dueYear);
+            // compare current date with due date
+            if (year > dueYear || (year == dueYear && month > dueMonth) || 
+                (year == dueYear && month == dueMonth && day > dueDay)) {
+                // book is returned late
+                // calculate days late
+                int daysLate = 0;
+                if (year == dueYear && month == dueMonth) {
+                    daysLate = day - dueDay;
+                } else if (year == dueYear) {
+                    // months are different
+                    // assuming all months have 30 days for simplicity
+                    daysLate = (month - dueMonth) * 30 + (day - dueDay);
+                } else {
+                    // years are different
+                    daysLate = (year - dueYear) * 365 + (month - dueMonth) * 30 + (day - dueDay);
+                }
+                float this_fine = daysLate * user.fine_rate;
+                user.fine += this_fine;
+                UpdateUser();
+                char fineMessage[200];
+                sprintf(fineMessage, "You have returned the book late by %d days. Fine incurred: Rs%.2f\n", daysLate, this_fine);
+                redPrint(fineMessage);
+            }
+
             // Increment book quantity
+
             DecrementBookQuantity(bookId,1); // increment quantity
             user.curr_borrowed--;
             UpdateUser();
@@ -910,11 +935,107 @@ int RemoveLineByID(const char *filename, int targetID) {
     return removed; // 1 if removed, 0 if not found
 }
 
+void getUserNamesArray(char userNames[100][30]){
+    FILE *fp = fopen("Users.txt", "r");
+    if (fp == NULL) {
+        printf("Error: could not open Users.txt\n");
+        return; // File not found
+    }
+
+    int id, currentlyBorrowed;
+    float fine;
+    char storedEmail[50], password[30], name[50], contact[15], tier[15];
+    // Read each line and extract fields separated by commas
+    while (fscanf(fp, "%d,%[^,],%[^,],%[^,],%[^,],%f,%d,%s\n",
+                  &id,
+                  storedEmail,
+                  password,
+                  name,
+                  contact,
+                  &fine,
+                  &currentlyBorrowed,
+                  tier) == 8)
+    {
+        strcpy(userNames[id], name);
+    }
+
+    fclose(fp);
+}
+
+void getBookNamesArray(char bookNames[100][30]){
+    FILE *fp = fopen("Books.txt", "r");
+    if (fp == NULL) {
+        printf("Error: could not open Books.txt\n");
+        return; // File not found
+    }
+
+    int id, quantity;
+    char title[30], author[30];
+    // Read each line and extract fields separated by commas
+    while (fscanf(fp, "%d,%[^,],%[^,],%d\n",
+                  &id,
+                  title,
+                  author,
+                  &quantity) == 4)
+    {
+        strcpy(bookNames[id], title);
+    }
+
+    fclose(fp);
+}
+
 void ViewAllBorrowedBooks(){
+    if (strcmp(user.email, ADMIN_EMAIL) != 0){
+        redPrint("Only Admins can view all borrowed books!\n");
+        return;
+    }
+    FILE *fp = fopen("Borrows.txt", "r");
+    if (fp == NULL) {
+        printf("Error: could not open Borrows.txt\n");
+        return; // File not found
+    }
+    int borrowId, userId, bookId;
+    char borrowDate[15], returnDate[15], dueDate[15];
+
+    char userNames[100][30];
+    char bookNames[100][30];
+    getUserNamesArray(userNames);
+    getBookNamesArray(bookNames);
+
+    printf("All Borrowed Books:\n");
+    printf("%-5s %-20s %-40s %-15s %-15s %-15s\n", "ID", "User", "Book Title", "Borrow Date", "Due Date");
+    printf("---------------------------------------------------------------------------------------------------------------\n");
+    // Read each line and extract fields separated by commas
+    while (fscanf(fp, "%d,%d,%d,%[^,],%[^,],%[^,\n]\n",
+                  &borrowId,
+                  &userId,
+                  &bookId,
+                  borrowDate,
+                  returnDate,
+                  dueDate) == 6)
+    {
+        printf("%-5d %-20s %-40s %-15s %-15s\n", borrowId, userNames[userId], bookNames[bookId], borrowDate, dueDate);
+    }
+    printf("---------------------------------------------------------------------------------------------------------------\n\n");
+    fclose(fp);
 
 }
-void ListBadMembers(){}
 
+void RemoveBook(){
+    if (strcmp(user.email, ADMIN_EMAIL) != 0){
+        redPrint("Only Admins can remove books!\n");
+        return;
+    }
+    int id;
+    printf("Enter Book ID to Remove: ");
+    scanf("%d", &id);
+    getchar();
+    int x = RemoveLineByID("Books.txt", id);
+    if (x){
+        greenPrint("Book Removed Successfully!\n");
+    } else{
+        redPrint("Book ID not found!\n");
+    }
 
-
+}   
 
