@@ -34,7 +34,6 @@ int UCount=0, BCount=0, BorrCount=0;
 // Color functions
 void ColorPrint(char str[], int color);
 void redPrint(char str[]);
-void bluePrint(char str[]);
 void greenPrint(char str[]);
 void yellowPrint(char str[]);
 void brightwhitePrint(char str[]);
@@ -123,21 +122,33 @@ int main(){
                 break;
             }
             LoginMenu();
-            scanf("%d", &choice);
+            int scanResult = scanf("%d", &choice);
             getchar();
+            
+            // Validate scanf return value
+            if (scanResult != 1) {
+                redPrint("Invalid input. Please enter a number.\n");
+                choice = -1; // Set to invalid value to continue loop
+                continue;
+            }
+            
+            // Validate choice range
+            if (choice < 1 || choice > 2) {
+                redPrint("Invalid Choice. Try Again\n");
+                continue;
+            }
+            
             switch(choice){
                 case 1:
                     SignUp(); break;
                 case 2:
                     Login(); break;
-                default:
-                    redPrint("Invalid Choice. Try Again\n");
             }
             if (!isLoggedIn){
                 yellowPrint("You need to be logged in to continue\n");
             }
 
-        }while(choice<1 || choice >2 || !isLoggedIn);
+        }while(!isLoggedIn);
 
         // we ensured that user is logged in here
 
@@ -151,8 +162,24 @@ int main(){
             }
             ExitMenu();
             printf("Enter Your Choice: ");
-            scanf("%d", &choice);
+            int scanResult = scanf("%d", &choice);
             getchar();
+            
+            // Validate scanf return value
+            if (scanResult != 1) {
+                redPrint("Invalid input. Please enter a number.\n");
+                continue;
+            }
+            
+            // Determine max choice based on admin status
+            int maxChoice = (strcmp(user.email, ADMIN_EMAIL) == 0) ? 10 : 4;
+            if (choice == 9 || choice == 10) {
+                // Logout and Exit are always valid
+            } else if (choice < 1 || choice > maxChoice || 
+                      (strcmp(user.email, ADMIN_EMAIL) != 0 && choice > 4)) {
+                redPrint("Invalid Choice\n");
+                continue;
+            }
 
             switch (choice){
             case 1: BorrowBook(); break;
@@ -187,7 +214,6 @@ void ColorPrint(char str[], int color) {
 }
 
 void redPrint(char str[]) { ColorPrint(str, 12); }
-void bluePrint(char str[]) { ColorPrint(str, 9); }
 void greenPrint(char str[]) { ColorPrint(str, 10); }
 void yellowPrint(char str[]) { ColorPrint(str, 6); }
 void brightwhitePrint(char str[]) { ColorPrint(str, 15); }
@@ -390,13 +416,31 @@ int SignUp(){
 int Login(){
     char email[50], password[30];
 
-    printf("Enter Email: ");
-    fgets(email, sizeof(email), stdin);
-    printf("Enter Password: ");
-    fgets(password, sizeof(password), stdin);
+    // Email validation loop
+    while (1) {
+        printf("Enter Email: ");
+        fgets(email, sizeof(email), stdin);
+        trimNewline(email);
+        
+        if (!ValidateNonEmptyString(email)) {
+            redPrint("Email cannot be empty. Try again.\n");
+            continue;
+        }
+        break;
+    }
 
-    trimNewline(email);
-    trimNewline(password);
+    // Password validation loop
+    while (1) {
+        printf("Enter Password: ");
+        fgets(password, sizeof(password), stdin);
+        trimNewline(password);
+        
+        if (!ValidateNonEmptyString(password)) {
+            redPrint("Password cannot be empty. Try again.\n");
+            continue;
+        }
+        break;
+    }
 
     FILE *fp = fopen("Users.txt", "r");
     if (fp == NULL) {
