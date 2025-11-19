@@ -3,3 +3,5 @@
 *.log
 input.txt
 output.txt
+*.tmp
+*.docx

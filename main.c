@@ -7,7 +7,7 @@
 #include <string.h>
 #include <time.h>
 #include <stdlib.h>
-#include "ui.h"
+#include <ctype.h>
 
 
 #define ADMIN_EMAIL "admin@admin.com"
@@ -30,6 +30,23 @@ User user;
 int isLoggedIn = 0;
 
 int UCount=0, BCount=0, BorrCount=0;
+
+// Color functions
+void ColorPrint(char str[], int color);
+void redPrint(char str[]);
+void bluePrint(char str[]);
+void greenPrint(char str[]);
+void yellowPrint(char str[]);
+void brightwhitePrint(char str[]);
+void purplePrint(char str[]);
+
+// UI / Menu Functions
+void LMSHeading();
+void LoginMenu();
+void MainMenu();
+void AdminMenu();
+void ExitMenu();
+
 
 // initialization functions
 void loadCounts();
@@ -77,6 +94,17 @@ void getBookNamesArray(char bookNames[100][30]);
 void trimNewline(char *str);
 int AppendToFile(const char *filename, const char *data);
 
+// Input validation functions
+int ValidateEmail(char email[50]);
+int ValidatePassword(char password[30]);
+int ValidateContact(char contact[15]);
+int ValidateName(char name[30]);
+int ValidateTier(int tier);
+int ValidateQuantity(int quantity);
+int ValidateDays(int days);
+int ValidateAmount(float amount);
+int ValidateNonEmptyString(char *str);
+
 
 
 
@@ -89,7 +117,7 @@ int main(){
     LMSHeading();
 
     while(1){
-        // validating choice of account
+        // validating choice
         do{
             if (isLoggedIn){
                 break;
@@ -148,6 +176,71 @@ int main(){
 }
 
 // =====================================================================
+// UI FUNCTIONS
+// =====================================================================
+// COLOR FUNCTIONS
+void ColorPrint(char str[], int color) {
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hConsole, color);
+    printf("%s", str);
+    SetConsoleTextAttribute(hConsole, 7);
+}
+
+void redPrint(char str[]) { ColorPrint(str, 12); }
+void bluePrint(char str[]) { ColorPrint(str, 9); }
+void greenPrint(char str[]) { ColorPrint(str, 10); }
+void yellowPrint(char str[]) { ColorPrint(str, 6); }
+void brightwhitePrint(char str[]) { ColorPrint(str, 15); }
+void purplePrint(char str[]) { ColorPrint(str, 13); }
+
+
+// UI / MENU FUNCTIONS
+
+void LMSHeading() {
+    printf(" _     _ _                            __  __                                      \n");
+    printf("| |   (_) |__  _ __ __ _ _ __ _   _  |  \\/  | __ _ _ __   __ _  __ _  ___         \n");
+    printf("| |   | | '_ \\| '__/ _` | '__| | | | | |\\/| |/ _` | '_ \\ / _` |/ _` |/ _ \\  _____ \n");
+    printf("| |___| | |_) | | | (_| | |  | |_| | | |  | | (_| | | | | (_| | (_| |  __/ |_____| \n");
+    printf("|_____|_|_.__/|_|  \\__,_|_|   \\__, | |_|  |_|\\__,_|_| |_|\\__,_|\\__, |\\___|        \n");
+    printf("                      _     __|___/         _                  |___/               \n");
+    printf(" _ __ ___   ___ _ __ | |_  / ___| _   _ ___| |_ ___ _ __ ___                      \n");
+    printf("| '_ ` _ \\ / _ \\ '_ \\| __| \\___ \\| | | / __| __/ _ \\ '_ ` _ \\                     \n");
+    printf("| | | | | |  __/ | | | |_   ___) | |_| \\__ \\ ||  __/ | | | | |                    \n");
+    printf("|_| |_| |_|\\___|_| |_|\\__| |____/ \\__, |___/\\__\\___|_| |_| |_|                    \n");
+    printf("                                  |___/                                           \n");
+}
+
+void LoginMenu() {
+    printf("1 - Sign Up\n");
+    printf("2 - Login\n");
+    printf("Enter Your Choice: ");
+}
+
+void MainMenu() {
+    printf("1 - Borrow A Book\n");
+    printf("2 - Return A Book\n");
+    printf("3 - Pay Fine\n");
+    printf("4 - View Books in Library\n");
+
+}
+
+void AdminMenu() {
+    // remove book option to add
+    printf("5 - Add A Book\n");
+    printf("6 - Remove A User\n");
+    printf("7 - View All Borrowed Books\n");
+    printf("8 - Remove A Book\n");
+}
+
+void ExitMenu() {
+    printf("9 - Logout\n");
+    printf("10 - Exit\n");
+}
+
+
+
+
+// =====================================================================
 // INITIALIZATION FUNCTIONS
 // =====================================================================
 
@@ -185,10 +278,16 @@ int SignUp(){
     char email[50], password[30], name[30], contact[15];
     int tier;
 
+    // Email validation loop
     while (1){
         printf("Enter Email: ");
         fgets(email, sizeof(email), stdin);
         trimNewline(email);
+
+        if (!ValidateEmail(email)){
+            redPrint("Invalid email format. Please use a valid email (e.g., user@domain.com)\n");
+            continue;
+        }
 
         if (EmailExists(email)){
             redPrint("This email already exists in system. Use another email\n");
@@ -197,20 +296,62 @@ int SignUp(){
         break;
     }
 
-    printf("Enter Password: ");
-    fgets(password, sizeof(password), stdin);
-    printf("Enter Name: ");
-    fgets(name, sizeof(name), stdin);
-    printf("Enter Contact Num: ");
-    fgets(contact, sizeof(contact), stdin);
-    printf("TIERS\n");
-    brightwhitePrint("1 - Silver: 3 Borrows at a time and fine of Rs100 per day if nook not returned\n");
-    yellowPrint("2 - Gold: 5 Borrows at a time and fine of Rs75 per day if nook not returned\n");
-    purplePrint("3 - Platinium: 7 Borrows at a time and fine of Rs50 per day if nook not returned\n");
+    // Password validation loop
+    while (1){
+        printf("Enter Password (min 6 characters, at least 1 number): ");
+        fgets(password, sizeof(password), stdin);
+        trimNewline(password);
 
-    printf("Enter Tier: ");
-    scanf("%d", &tier);
-    getchar();
+        if (!ValidatePassword(password)){
+            redPrint("Password must be at least 6 characters and contain at least 1 number\n");
+            continue;
+        }
+        break;
+    }
+
+    // Name validation loop
+    while (1){
+        printf("Enter Name: ");
+        fgets(name, sizeof(name), stdin);
+        trimNewline(name);
+
+        if (!ValidateName(name)){
+            redPrint("Name must be non-empty and contain only letters and spaces\n");
+            continue;
+        }
+        break;
+    }
+
+    // Contact validation loop
+    while (1){
+        printf("Enter Contact Number (10-15 digits): ");
+        fgets(contact, sizeof(contact), stdin);
+        trimNewline(contact);
+
+        if (!ValidateContact(contact)){
+            redPrint("Contact must be 10-15 digits long\n");
+            continue;
+        }
+        break;
+    }
+
+    printf("TIERS\n");
+    brightwhitePrint("1 - Silver: 3 Borrows at a time and fine of Rs100 per day if book not returned\n");
+    yellowPrint("2 - Gold: 5 Borrows at a time and fine of Rs75 per day if book not returned\n");
+    purplePrint("3 - Platinium: 7 Borrows at a time and fine of Rs50 per day if book not returned\n");
+
+    // Tier validation loop
+    while (1){
+        printf("Enter Tier (1-3): ");
+        scanf("%d", &tier);
+        getchar();
+
+        if (!ValidateTier(tier)){
+            redPrint("Invalid tier. Please enter 1, 2, or 3\n");
+            continue;
+        }
+        break;
+    }
     
     // Function to write data to file in csv format
     // id,Email,Password,Name,Contact,fine,currently_borrowed,Tier (if error in this, return 0)
@@ -336,7 +477,7 @@ void TierSpecifics(int tier){
             user.fine_rate = 50;
             break;
         default:
-            printf("Invalid tier. Setting to default values.\n");
+            printf("Invalid tier\n");
             break;
     }
 }
@@ -570,8 +711,8 @@ void PayFine(){
     scanf("%f", &amount);
     getchar();
 
-    if (amount <= 0){
-        redPrint("Invalid amount. Try Again.\n");
+    if (!ValidateAmount(amount)){
+        redPrint("Invalid amount. Amount must be positive\n");
         return;
     }
     if (amount > user.fine){
@@ -590,6 +731,20 @@ void BorrowBook(){
     printf("Enter a Book Title to Borrow: ");
     fgets(bookTitle, sizeof(bookTitle), stdin);
     trimNewline(bookTitle);
+
+    if (!ValidateNonEmptyString(bookTitle)){
+        redPrint("Book title cannot be empty\n");
+        return;
+    }
+
+    // Check if user has reached max borrow limit
+    if (user.curr_borrowed >= user.max_borrow){
+        char message[200];
+        sprintf(message, "You have reached your maximum borrow limit of %d books\n", user.max_borrow);
+        redPrint(message);
+        return;
+    }
+
     int id = FindBookName(bookTitle);
     if (id == -1){
         return;
@@ -597,18 +752,14 @@ void BorrowBook(){
         int d;
         do
         {
-            printf("Enter number of days to borrow: ");
+            printf("Enter number of days to borrow (1-7): ");
             scanf("%d", &d);
             getchar();
-            if (d <= 0){
-                redPrint("Invalid number of days. Try Again.\n");
+            if (!ValidateDays(d)){
+                redPrint("Invalid number of days. Must be between 1 and 7\n");
             }
-            if (d > 7){
-                redPrint("You can borrow a book for a maximum of 7 days only. Try Again.\n");
-            }
-            //max borrow check
 
-        } while (d <= 0 || d > 7);
+        } while (!ValidateDays(d));
             
         UpdateBookQuantity(id, 0); // decrement quantity
         user.curr_borrowed++;
@@ -880,13 +1031,51 @@ void AddBook(){
         redPrint("Only Admins can add books!\n");
         return;
     }
-    printf("Enter Book Name: ");
-    fgets(bookName, sizeof(bookName), stdin);
-    printf("Enter Author Name: ");
-    fgets(author, sizeof(author), stdin);
-    printf("Enter Quantity: ");
-    scanf("%d", &quantity);
-    getchar();
+
+    // Book name validation loop
+    while (1){
+        printf("Enter Book Name: ");
+        fgets(bookName, sizeof(bookName), stdin);
+        trimNewline(bookName);
+
+        if (!ValidateName(bookName)){
+            redPrint("Book name must be non-empty and contain only letters, numbers, and spaces\n");
+            continue;
+        }
+        break;
+    }
+
+    // Author name validation loop
+    while (1){
+        printf("Enter Author Name: ");
+        fgets(author, sizeof(author), stdin);
+        trimNewline(author);
+
+        if (!ValidateName(author)){
+            redPrint("Author name must be non-empty and contain only letters, numbers, and spaces\n");
+            continue;
+        }
+        break;
+    }
+
+    // Quantity validation loop
+    while (1){
+        printf("Enter Quantity (positive integer): ");
+        int result = scanf("%d", &quantity);
+        getchar();
+
+        if (result != 1){
+            redPrint("Invalid input. Please enter a number\n");
+            while (getchar() != '\n'); // Clear input buffer
+            continue;
+        }
+
+        if (!ValidateQuantity(quantity)){
+            redPrint("Quantity must be a positive integer\n");
+            continue;
+        }
+        break;
+    }
 
     char line[200];
     CreateBookLine(BCount, bookName, author, quantity, line);
@@ -1055,4 +1244,107 @@ int AppendToFile(const char *filename, const char *data) {
     fprintf(fp, "%s\n", data); // write string + newline
     fclose(fp);
     return 1; // success
+}
+
+// =====================================================================
+// INPUT VALIDATION FUNCTIONS
+// =====================================================================
+
+int ValidateEmail(char email[50]) {
+    if (strlen(email) == 0 || strlen(email) > 49)
+        return 0;
+    
+    // Check for @ symbol
+    char *atSign = strchr(email, '@');
+    if (atSign == NULL)
+        return 0;
+    
+    // Check that @ is not at start or end
+    if (atSign == email || atSign[1] == '\0')
+        return 0;
+    
+    // Check for dot after @
+    char *dotAfterAt = strchr(atSign + 1, '.');
+    if (dotAfterAt == NULL || dotAfterAt[1] == '\0')
+        return 0;
+    
+    // Check no spaces
+    if (strchr(email, ' ') != NULL)
+        return 0;
+    
+    return 1;
+}
+
+int ValidatePassword(char password[30]) {
+    int len = strlen(password);
+    
+    // Check length (min 6, max 29)
+    if (len < 6 || len > 29)
+        return 0;
+    
+    // Check for at least one digit
+    int hasDigit = 0;
+    for (int i = 0; i < len; i++) {
+        if (isdigit(password[i])) {
+            hasDigit = 1;
+            break;
+        }
+    }
+    
+    if (!hasDigit)
+        return 0;
+    
+    return 1;
+}
+
+int ValidateContact(char contact[15]) {
+    int len = strlen(contact);
+    
+    // Check length (10-14 digits)
+    if (len < 10 || len > 14)
+        return 0;
+    
+    // Check all characters are digits
+    for (int i = 0; i < len; i++) {
+        if (!isdigit(contact[i]))
+            return 0;
+    }
+    
+    return 1;
+}
+
+int ValidateName(char name[30]) {
+    int len = strlen(name);
+    
+    // Check non-empty and reasonable length
+    if (len == 0 || len > 29)
+        return 0;
+    
+    // Check for valid characters (letters, spaces, hyphens)
+    for (int i = 0; i < len; i++) {
+        if (!isalpha(name[i]) && name[i] != ' ' && name[i] != '-' && !isdigit(name[i]))
+            return 0;
+    }
+    
+    return 1;
+}
+
+int ValidateTier(int tier) {
+    return (tier >= 1 && tier <= 3) ? 1 : 0;
+}
+
+int ValidateQuantity(int quantity) {
+    return (quantity > 0) ? 1 : 0;
+}
+
+int ValidateDays(int days) {
+    return (days >= 1 && days <= 7) ? 1 : 0;
+}
+
+int ValidateAmount(float amount) {
+    return (amount > 0.0) ? 1 : 0;
+}
+
+int ValidateNonEmptyString(char *str) {
+    return (strlen(str) > 0) ? 1 : 0;
 }
