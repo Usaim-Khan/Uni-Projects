@@ -14,7 +14,7 @@
 #include <ctype.h>
 
 
-#define ADMIN_EMAIL "admin@admin.com"
+#define ADMIN_EMAIL "admin@gmail.com"
 
 typedef struct {
     int id;
@@ -533,7 +533,7 @@ void TierSpecifics(int tier){
 int EmailExists(char email[50]) {
     FILE *fp = fopen("Users.txt", "r");
     if (fp == NULL) {
-        printf("Error: could not open Users.txt\n");
+
         return 0; // If file not found, treat as empty (no duplicate)
     }
 
@@ -594,7 +594,7 @@ void ReturnBook(){
 
     FILE *fp = fopen("Borrows.txt", "r");
     if (fp == NULL) {
-        printf("Error: could not open Borrows.txt\n");
+        printf("No Borrow Records\n");
         return; // File not found
     }
     int borrowId, userId, bookId;
@@ -607,7 +607,7 @@ void ReturnBook(){
 
     printf("Books You Have Borrowed:\n");
     printf("%-5s %-40s %-15s\n", "ID", "Title", "Due Date");
-    printf("--------------------------------------------------------------\n");
+    printf("-----------------------------------------------------------------\n");
     int foundAny = 0;
     // Read each line and extract fields separated by commas
     while (fscanf(fp, "%d,%d,%d,%[^,],%[^,],%[^,\n]\n",
@@ -620,10 +620,10 @@ void ReturnBook(){
     {
         if (userId == user.id && strcmp(returnDate, "NULL") == 0){
             foundAny = 1;
-                printf("%-5d %-40s\n", borrowId, bookNames[bookId]);
+                printf("%-5d %-40s %-10s\n", borrowId, bookNames[bookId],dueDate);
         }
     }
-    printf("\n-----------------------------------------------------------------------------\n");  
+    printf("\n----------------------------------------------------------------\n");  
 
     fclose(fp);
     if (!foundAny){
@@ -754,6 +754,12 @@ void DisplayBooks(){
 
 void PayFine(){
     float amount;
+
+    if(user.fine <= 0.0){
+        greenPrint("You have no fine to pay.\n");
+        return;
+    }
+
     printf("Your current fine is: %.2f\n", user.fine);
     printf("Enter amount to pay: ");
     scanf("%f", &amount);
@@ -1021,7 +1027,8 @@ void ViewAllBorrowedBooks(){
     }
     FILE *fp = fopen("Borrows.txt", "r");
     if (fp == NULL) {
-        printf("Error: could not open Borrows.txt\n");
+        // printf("Error: could not open Borrows.txt\n");
+        printf("No Borrow Records\n");
         return; // File not found
     }
     int borrowId, userId, bookId;
@@ -1062,8 +1069,6 @@ void RemoveBook(){
     getchar();
     int x = RemoveLineByID("Books.txt", id);
     if (x){
-        BCount--;
-        saveCounts();
         greenPrint("Book Removed Successfully!\n");
     } else{
         redPrint("Book ID not found!\n");
@@ -1151,8 +1156,6 @@ void RemoveUser(){
 
     int x = RemoveLineByID("Users.txt", id);
     if (x){
-        UCount--;
-        saveCounts();
         greenPrint("User Removed Successfully!\n");
     } else{
         redPrint("User ID not found!\n");
