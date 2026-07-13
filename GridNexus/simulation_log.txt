@@ -1,0 +1,510 @@
+========== 7-DAY SIMULATION STARTED ==========
+
+==============================
+         DAY 1
+==============================
+Change in Weather: Sunlight changed by 25, Wind changed by 3.
+
+--- Actual Generation vs Demand ---
+Grid 1 Actual Generation: 828 | Actual Demand: 714
+Grid 2 Actual Generation: 986.1 | Actual Demand: 844
+Grid 3 Actual Generation: 813.2 | Actual Demand: 947
+Transaction: Transferred 114 units from Grid 1 to Grid 3.
+Transaction: Transferred 19.8 units from Grid 2 to Grid 3.
+ALL GRIDS CAN MEET THE DEMAND AFTER ENERGY TRANSACTION
+
+--- Predicted Demand for Next Day ---
+Grid 1 Predicted Demand: 714
+Grid 2 Predicted Demand: 844
+Grid 3 Predicted Demand: 947
+
+==============================
+         DAY 2
+==============================
+Change in Weather: Sunlight changed by 17, Wind changed by -4.
+
+--- Actual Generation vs Demand ---
+Grid 1 Actual Generation: 841 | Actual Demand: 739.5
+Grid 2 Actual Generation: 996.6 | Actual Demand: 857.5
+Grid 3 Actual Generation: 828.3 | Actual Demand: 940
+Transaction: Transferred 101.5 units from Grid 1 to Grid 3.
+Transaction: Transferred 10.2 units from Grid 2 to Grid 3.
+ALL GRIDS CAN MEET THE DEMAND AFTER ENERGY TRANSACTION
+
+--- Predicted Demand for Next Day ---
+Grid 1 Predicted Demand: 726.75
+Grid 2 Predicted Demand: 850.75
+Grid 3 Predicted Demand: 943.5
+
+==============================
+         DAY 3
+==============================
+Change in Weather: Sunlight changed by 7, Wind changed by 18.
+
+--- Actual Generation vs Demand ---
+Grid 1 Actual Generation: 866 | Actual Demand: 768
+Grid 2 Actual Generation: 1024.5 | Actual Demand: 861.5
+Grid 3 Actual Generation: 852.2 | Actual Demand: 937
+Transaction: Transferred 84.8 units from Grid 1 to Grid 3.
+ALL GRIDS CAN MEET THE DEMAND AFTER ENERGY TRANSACTION
+
+--- Predicted Demand for Next Day ---
+Grid 1 Predicted Demand: 740.5
+Grid 2 Predicted Demand: 854.333
+Grid 3 Predicted Demand: 941.333
+
+==============================
+         DAY 4
+==============================
+Change in Weather: Sunlight changed by 18, Wind changed by 1.
+
+--- Actual Generation vs Demand ---
+Grid 1 Actual Generation: 885 | Actual Demand: 754.5
+Grid 2 Actual Generation: 1041.9 | Actual Demand: 869
+Grid 3 Actual Generation: 872.9 | Actual Demand: 947
+Transaction: Transferred 74.1 units from Grid 1 to Grid 3.
+ALL GRIDS CAN MEET THE DEMAND AFTER ENERGY TRANSACTION
+
+--- Predicted Demand for Next Day ---
+Grid 1 Predicted Demand: 744
+Grid 2 Predicted Demand: 858
+Grid 3 Predicted Demand: 942.75
+
+==============================
+         DAY 5
+==============================
+Change in Weather: Sunlight changed by 10, Wind changed by -6.
+
+--- Actual Generation vs Demand ---
+Grid 1 Actual Generation: 889 | Actual Demand: 786
+Grid 2 Actual Generation: 1043.7 | Actual Demand: 865.5
+Grid 3 Actual Generation: 878.5 | Actual Demand: 945
+Transaction: Transferred 66.5 units from Grid 1 to Grid 3.
+ALL GRIDS CAN MEET THE DEMAND AFTER ENERGY TRANSACTION
+
+--- Predicted Demand for Next Day ---
+Grid 1 Predicted Demand: 752.4
+Grid 2 Predicted Demand: 859.5
+Grid 3 Predicted Demand: 943.2
+
+==============================
+         DAY 6
+==============================
+Change in Weather: Sunlight changed by -5, Wind changed by 6.
+
+--- Actual Generation vs Demand ---
+Grid 1 Actual Generation: 890 | Actual Demand: 810
+Grid 2 Actual Generation: 1046.4 | Actual Demand: 871.5
+Grid 3 Actual Generation: 878.4 | Actual Demand: 962
+Transaction: Transferred 80 units from Grid 1 to Grid 3.
+Transaction: Transferred 3.6 units from Grid 2 to Grid 3.
+ALL GRIDS CAN MEET THE DEMAND AFTER ENERGY TRANSACTION
+
+--- Predicted Demand for Next Day ---
+Grid 1 Predicted Demand: 762
+Grid 2 Predicted Demand: 861.5
+Grid 3 Predicted Demand: 946.333
+
+==============================
+         DAY 7
+==============================
+Change in Weather: Sunlight changed by -1, Wind changed by 12.
+
+--- Actual Generation vs Demand ---
+Grid 1 Actual Generation: 901 | Actual Demand: 808.5
+Grid 2 Actual Generation: 1059.9 | Actual Demand: 870.5
+Grid 3 Actual Generation: 888.1 | Actual Demand: 973
+Transaction: Transferred 84.9 units from Grid 1 to Grid 3.
+ALL GRIDS CAN MEET THE DEMAND AFTER ENERGY TRANSACTION
+
+--- Predicted Demand for Next Day ---
+Grid 1 Predicted Demand: 768.643
+Grid 2 Predicted Demand: 862.786
+Grid 3 Predicted Demand: 950.143
+
+========== 7-DAY SIMULATION ENDED ==========
+
+========== 7-DAY SIMULATION STARTED ==========
+
+==============================
+         DAY 1
+==============================
+Change in Weather: Sunlight changed by 13, Wind changed by 14.
+
+--- Actual Generation vs Demand ---
+Grid 1 Actual Generation: 827 | Actual Demand: 702
+Grid 2 Actual Generation: 988.5 | Actual Demand: 835
+Grid 3 Actual Generation: 809.9 | Actual Demand: 946
+Transaction: Transferred 125 units from Grid 1 to Grid 3.
+Transaction: Transferred 11.1 units from Grid 2 to Grid 3.
+ALL GRIDS CAN MEET THE DEMAND AFTER ENERGY TRANSACTION
+
+--- Predicted Demand for Next Day ---
+Grid 1 Predicted Demand: 702
+Grid 2 Predicted Demand: 835
+Grid 3 Predicted Demand: 946
+
+==============================
+         DAY 2
+==============================
+Change in Weather: Sunlight changed by -10, Wind changed by -6.
+
+--- Actual Generation vs Demand ---
+Grid 1 Actual Generation: 811 | Actual Demand: 768
+Grid 2 Actual Generation: 972.3 | Actual Demand: 843
+Grid 3 Actual Generation: 793.5 | Actual Demand: 954
+Transaction: Transferred 43 units from Grid 1 to Grid 3.
+Transaction: Transferred 117.5 units from Grid 2 to Grid 3.
+ALL GRIDS CAN MEET THE DEMAND AFTER ENERGY TRANSACTION
+
+--- Predicted Demand for Next Day ---
+Grid 1 Predicted Demand: 735
+Grid 2 Predicted Demand: 839
+Grid 3 Predicted Demand: 950
+
+==============================
+         DAY 3
+==============================
+Change in Weather: Sunlight changed by 19, Wind changed by 25.
+
+--- Actual Generation vs Demand ---
+Grid 1 Actual Generation: 855 | Actual Demand: 767.5
+Grid 2 Actual Generation: 1019.4 | Actual Demand: 857.5
+Grid 3 Actual Generation: 836.9 | Actual Demand: 960
+Transaction: Transferred 87.5 units from Grid 1 to Grid 3.
+Transaction: Transferred 35.6 units from Grid 2 to Grid 3.
+ALL GRIDS CAN MEET THE DEMAND AFTER ENERGY TRANSACTION
+
+--- Predicted Demand for Next Day ---
+Grid 1 Predicted Demand: 745.833
+Grid 2 Predicted Demand: 845.167
+Grid 3 Predicted Demand: 953.333
+
+==============================
+         DAY 4
+==============================
+Change in Weather: Sunlight changed by -5, Wind changed by 4.
+
+--- Actual Generation vs Demand ---
+Grid 1 Actual Generation: 854 | Actual Demand: 791
+Grid 2 Actual Generation: 1019.7 | Actual Demand: 884.5
+Grid 3 Actual Generation: 835 | Actual Demand: 979
+Transaction: Transferred 63 units from Grid 1 to Grid 3.
+Transaction: Transferred 81 units from Grid 2 to Grid 3.
+ALL GRIDS CAN MEET THE DEMAND AFTER ENERGY TRANSACTION
+
+--- Predicted Demand for Next Day ---
+Grid 1 Predicted Demand: 757.125
+Grid 2 Predicted Demand: 855
+Grid 3 Predicted Demand: 959.75
+
+==============================
+         DAY 5
+==============================
+Change in Weather: Sunlight changed by 10, Wind changed by 9.
+
+--- Actual Generation vs Demand ---
+Grid 1 Actual Generation: 873 | Actual Demand: 772
+Grid 2 Actual Generation: 1039.5 | Actual Demand: 901
+Grid 3 Actual Generation: 854.1 | Actual Demand: 995
+Transaction: Transferred 101 units from Grid 1 to Grid 3.
+Transaction: Transferred 39.9 units from Grid 2 to Grid 3.
+ALL GRIDS CAN MEET THE DEMAND AFTER ENERGY TRANSACTION
+
+--- Predicted Demand for Next Day ---
+Grid 1 Predicted Demand: 760.1
+Grid 2 Predicted Demand: 864.2
+Grid 3 Predicted Demand: 966.8
+
+==============================
+         DAY 6
+==============================
+Change in Weather: Sunlight changed by 9, Wind changed by 0.
+
+--- Actual Generation vs Demand ---
+Grid 1 Actual Generation: 882 | Actual Demand: 771
+Grid 2 Actual Generation: 1047.6 | Actual Demand: 902
+Grid 3 Actual Generation: 864 | Actual Demand: 1016
+Transaction: Transferred 111 units from Grid 1 to Grid 3.
+Transaction: Transferred 41 units from Grid 2 to Grid 3.
+ALL GRIDS CAN MEET THE DEMAND AFTER ENERGY TRANSACTION
+
+--- Predicted Demand for Next Day ---
+Grid 1 Predicted Demand: 761.917
+Grid 2 Predicted Demand: 870.5
+Grid 3 Predicted Demand: 975
+
+==============================
+         DAY 7
+==============================
+Change in Weather: Sunlight changed by 17, Wind changed by -10.
+
+--- Actual Generation vs Demand ---
+Grid 1 Actual Generation: 889 | Actual Demand: 759
+Grid 2 Actual Generation: 1050.9 | Actual Demand: 902.5
+Grid 3 Actual Generation: 873.7 | Actual Demand: 1053
+Transaction: Transferred 130 units from Grid 1 to Grid 3.
+Transaction: Transferred 49.3 units from Grid 2 to Grid 3.
+ALL GRIDS CAN MEET THE DEMAND AFTER ENERGY TRANSACTION
+
+--- Predicted Demand for Next Day ---
+Grid 1 Predicted Demand: 761.5
+Grid 2 Predicted Demand: 875.071
+Grid 3 Predicted Demand: 986.143
+
+========== 7-DAY SIMULATION ENDED ==========
+
+========== 7-DAY SIMULATION STARTED ==========
+
+==============================
+         DAY 1
+==============================
+Change in Weather: Sunlight changed by -5, Wind changed by 0.
+
+--- Actual Generation vs Demand ---
+Grid 1 Actual Generation: 795 | Actual Demand: 676.5
+Grid 2 Actual Generation: 955.5 | Actual Demand: 830.5
+Grid 3 Actual Generation: 777.5 | Actual Demand: 948
+Transaction: Transferred 118.5 units from Grid 1 to Grid 3.
+Transaction: Transferred 52 units from Grid 2 to Grid 3.
+ALL GRIDS CAN MEET THE DEMAND AFTER ENERGY TRANSACTION
+
+--- Predicted Demand for Next Day ---
+Grid 1 Predicted Demand: 676.5
+Grid 2 Predicted Demand: 830.5
+Grid 3 Predicted Demand: 948
+
+==============================
+         DAY 2
+==============================
+Change in Weather: Sunlight changed by 27, Wind changed by 8.
+
+--- Actual Generation vs Demand ---
+Grid 1 Actual Generation: 830 | Actual Demand: 697.5
+Grid 2 Actual Generation: 989.4 | Actual Demand: 834.5
+Grid 3 Actual Generation: 814.4 | Actual Demand: 987
+Transaction: Transferred 132.5 units from Grid 1 to Grid 3.
+Transaction: Transferred 40.1 units from Grid 2 to Grid 3.
+ALL GRIDS CAN MEET THE DEMAND AFTER ENERGY TRANSACTION
+
+--- Predicted Demand for Next Day ---
+Grid 1 Predicted Demand: 687
+Grid 2 Predicted Demand: 832.5
+Grid 3 Predicted Demand: 967.5
+
+==============================
+         DAY 3
+==============================
+Change in Weather: Sunlight changed by -4, Wind changed by 29.
+
+--- Actual Generation vs Demand ---
+Grid 1 Actual Generation: 855 | Actual Demand: 724.5
+Grid 2 Actual Generation: 1020.6 | Actual Demand: 846.5
+Grid 3 Actual Generation: 836.1 | Actual Demand: 1014
+Transaction: Transferred 130.5 units from Grid 1 to Grid 3.
+Transaction: Transferred 47.4 units from Grid 2 to Grid 3.
+ALL GRIDS CAN MEET THE DEMAND AFTER ENERGY TRANSACTION
+
+--- Predicted Demand for Next Day ---
+Grid 1 Predicted Demand: 699.5
+Grid 2 Predicted Demand: 837.167
+Grid 3 Predicted Demand: 983
+
+==============================
+         DAY 4
+==============================
+Change in Weather: Sunlight changed by 26, Wind changed by 12.
+
+--- Actual Generation vs Demand ---
+Grid 1 Actual Generation: 893 | Actual Demand: 714
+Grid 2 Actual Generation: 1058.4 | Actual Demand: 845
+Grid 3 Actual Generation: 875.5 | Actual Demand: 996
+Transaction: Transferred 120.5 units from Grid 1 to Grid 3.
+ALL GRIDS CAN MEET THE DEMAND AFTER ENERGY TRANSACTION
+
+--- Predicted Demand for Next Day ---
+Grid 1 Predicted Demand: 703.125
+Grid 2 Predicted Demand: 839.125
+Grid 3 Predicted Demand: 986.25
+
+==============================
+         DAY 5
+==============================
+Change in Weather: Sunlight changed by 2, Wind changed by -8.
+
+--- Actual Generation vs Demand ---
+Grid 1 Actual Generation: 887 | Actual Demand: 708
+Grid 2 Actual Generation: 1050.6 | Actual Demand: 860
+Grid 3 Actual Generation: 870.5 | Actual Demand: 1001
+Transaction: Transferred 130.5 units from Grid 1 to Grid 3.
+ALL GRIDS CAN MEET THE DEMAND AFTER ENERGY TRANSACTION
+
+--- Predicted Demand for Next Day ---
+Grid 1 Predicted Demand: 704.1
+Grid 2 Predicted Demand: 843.3
+Grid 3 Predicted Demand: 989.2
+
+==============================
+         DAY 6
+==============================
+Change in Weather: Sunlight changed by 26, Wind changed by 0.
+
+--- Actual Generation vs Demand ---
+Grid 1 Actual Generation: 913 | Actual Demand: 735
+Grid 2 Actual Generation: 1074 | Actual Demand: 867.5
+Grid 3 Actual Generation: 899.1 | Actual Demand: 993
+Transaction: Transferred 93.9 units from Grid 1 to Grid 3.
+ALL GRIDS CAN MEET THE DEMAND AFTER ENERGY TRANSACTION
+
+--- Predicted Demand for Next Day ---
+Grid 1 Predicted Demand: 709.25
+Grid 2 Predicted Demand: 847.333
+Grid 3 Predicted Demand: 989.833
+
+==============================
+         DAY 7
+==============================
+Change in Weather: Sunlight changed by 22, Wind changed by -10.
+
+--- Actual Generation vs Demand ---
+Grid 1 Actual Generation: 925 | Actual Demand: 720
+Grid 2 Actual Generation: 1081.8 | Actual Demand: 870
+Grid 3 Actual Generation: 914.3 | Actual Demand: 1026
+Transaction: Transferred 111.7 units from Grid 1 to Grid 3.
+ALL GRIDS CAN MEET THE DEMAND AFTER ENERGY TRANSACTION
+
+--- Predicted Demand for Next Day ---
+Grid 1 Predicted Demand: 710.786
+Grid 2 Predicted Demand: 850.571
+Grid 3 Predicted Demand: 995
+
+========== 7-DAY SIMULATION ENDED ==========
+
+========== 7-DAY SIMULATION STARTED ==========
+
+==============================
+         DAY 1
+==============================
+Change in Weather: Sunlight changed by 26, Wind changed by -1.
+
+--- Actual Generation vs Demand ---
+Grid 1 Actual Generation: 825 | Actual Demand: 705
+Grid 2 Actual Generation: 982.2 | Actual Demand: 826
+Grid 3 Actual Generation: 810.7 | Actual Demand: 974
+Transaction: Transferred 120 units from Grid 1 to Grid 3.
+Transaction: Transferred 43.3 units from Grid 2 to Grid 3.
+ALL GRIDS CAN MEET THE DEMAND AFTER ENERGY TRANSACTION
+
+--- Predicted Demand for Next Day ---
+Grid 1 Predicted Demand: 705
+Grid 2 Predicted Demand: 826
+Grid 3 Predicted Demand: 974
+
+==============================
+         DAY 2
+==============================
+Change in Weather: Sunlight changed by 2, Wind changed by -1.
+
+--- Actual Generation vs Demand ---
+Grid 1 Actual Generation: 826 | Actual Demand: 732
+Grid 2 Actual Generation: 982.8 | Actual Demand: 838
+Grid 3 Actual Generation: 812 | Actual Demand: 992
+Transaction: Transferred 94 units from Grid 1 to Grid 3.
+Transaction: Transferred 86 units from Grid 2 to Grid 3.
+ALL GRIDS CAN MEET THE DEMAND AFTER ENERGY TRANSACTION
+
+--- Predicted Demand for Next Day ---
+Grid 1 Predicted Demand: 718.5
+Grid 2 Predicted Demand: 832
+Grid 3 Predicted Demand: 983
+
+==============================
+         DAY 3
+==============================
+Change in Weather: Sunlight changed by 26, Wind changed by -7.
+
+--- Actual Generation vs Demand ---
+Grid 1 Actual Generation: 845 | Actual Demand: 759
+Grid 2 Actual Generation: 997.8 | Actual Demand: 857
+Grid 3 Actual Generation: 834.3 | Actual Demand: 1008
+Transaction: Transferred 86 units from Grid 1 to Grid 3.
+Transaction: Transferred 87.7 units from Grid 2 to Grid 3.
+ALL GRIDS CAN MEET THE DEMAND AFTER ENERGY TRANSACTION
+
+--- Predicted Demand for Next Day ---
+Grid 1 Predicted Demand: 732
+Grid 2 Predicted Demand: 840.333
+Grid 3 Predicted Demand: 991.333
+
+==============================
+         DAY 4
+==============================
+Change in Weather: Sunlight changed by 2, Wind changed by 26.
+
+--- Actual Generation vs Demand ---
+Grid 1 Actual Generation: 873 | Actual Demand: 763.5
+Grid 2 Actual Generation: 1030.8 | Actual Demand: 873
+Grid 3 Actual Generation: 859.9 | Actual Demand: 1023
+Transaction: Transferred 109.5 units from Grid 1 to Grid 3.
+Transaction: Transferred 53.6 units from Grid 2 to Grid 3.
+ALL GRIDS CAN MEET THE DEMAND AFTER ENERGY TRANSACTION
+
+--- Predicted Demand for Next Day ---
+Grid 1 Predicted Demand: 739.875
+Grid 2 Predicted Demand: 848.5
+Grid 3 Predicted Demand: 999.25
+
+==============================
+         DAY 5
+==============================
+Change in Weather: Sunlight changed by -4, Wind changed by 13.
+
+--- Actual Generation vs Demand ---
+Grid 1 Actual Generation: 882 | Actual Demand: 759
+Grid 2 Actual Generation: 1042.8 | Actual Demand: 912.5
+Grid 3 Actual Generation: 867.2 | Actual Demand: 1043
+Transaction: Transferred 123 units from Grid 1 to Grid 3.
+Transaction: Transferred 52.8 units from Grid 2 to Grid 3.
+ALL GRIDS CAN MEET THE DEMAND AFTER ENERGY TRANSACTION
+
+--- Predicted Demand for Next Day ---
+Grid 1 Predicted Demand: 743.7
+Grid 2 Predicted Demand: 861.3
+Grid 3 Predicted Demand: 1008
+
+==============================
+         DAY 6
+==============================
+Change in Weather: Sunlight changed by 27, Wind changed by 29.
+
+--- Actual Generation vs Demand ---
+Grid 1 Actual Generation: 938 | Actual Demand: 750
+Grid 2 Actual Generation: 1101.9 | Actual Demand: 917.5
+Grid 3 Actual Generation: 923 | Actual Demand: 1045
+Transaction: Transferred 122 units from Grid 1 to Grid 3.
+ALL GRIDS CAN MEET THE DEMAND AFTER ENERGY TRANSACTION
+
+--- Predicted Demand for Next Day ---
+Grid 1 Predicted Demand: 744.75
+Grid 2 Predicted Demand: 870.667
+Grid 3 Predicted Demand: 1014.17
+
+==============================
+         DAY 7
+==============================
+Change in Weather: Sunlight changed by -1, Wind changed by -8.
+
+--- Actual Generation vs Demand ---
+Grid 1 Actual Generation: 929 | Actual Demand: 757.5
+Grid 2 Actual Generation: 1091.4 | Actual Demand: 917.5
+Grid 3 Actual Generation: 914.7 | Actual Demand: 1075
+Transaction: Transferred 160.3 units from Grid 1 to Grid 3.
+ALL GRIDS CAN MEET THE DEMAND AFTER ENERGY TRANSACTION
+
+--- Predicted Demand for Next Day ---
+Grid 1 Predicted Demand: 746.571
+Grid 2 Predicted Demand: 877.357
+Grid 3 Predicted Demand: 1022.86
+
+========== 7-DAY SIMULATION ENDED ==========
+
